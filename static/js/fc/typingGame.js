@@ -930,6 +930,7 @@ fc.typing.events = fc.typing.events || {};
             nodes.$problemRuby.html("Ruby");
             nodes.$problemCaption.html("Caption");
             nodes.$problemRaw.html("Problem");
+            unfocusProblems();
         }
     };
     ns.renderProblem = function(){

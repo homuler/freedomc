@@ -4,3 +4,5 @@
     <select>Filter2
 <div #ranking-panel .panel .panel-primary>
   <div .panel-heading>Typing Score Data
+<a .btn .btn-primary href=@{FCMusicListR}>Back
+<a .btn .btn-default href=@{FCTypingR}>Home

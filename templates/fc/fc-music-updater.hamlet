@@ -2,3 +2,4 @@
   <form .form-horizontal role=form method=post action=@{FCUpdateMusicR musicId} enctype=multipart/form-data>
     ^{widget}
     <button type=submit .btn .btn-default>Submit
+    <a .btn .btn-default href=@{FCMusicListR}>Cancel

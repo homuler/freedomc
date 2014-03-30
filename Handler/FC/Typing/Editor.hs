@@ -23,12 +23,21 @@ fcMusicEditorForm extra = do
   mSoundSrc <- lookupSession "mSoundSrc"
   mLyricSrc <- lookupSession "mLyricSrc"
   mPictureSrc <- lookupSession "mPictureSrc"
+  $logInfo $ T.pack $ show mTitle
+  $logInfo $ T.pack $ show mMusician
+  $logInfo $ T.pack $ show mLyricSrc
+  $logInfo $ T.pack $ show mFormat
   $logInfo $ T.append "genre = " $ T.pack $ show mGenre
   lyrics <- case mLyricSrc of
     Just lyricSrc -> liftIO . readLyrics $ T.unpack lyricSrc
     Nothing -> return []
+  $logInfo $ "Lyric read"
   let musicFormat = fromMaybe FCDM.Video $ (read . T.unpack) <$> mFormat
-      musicGenre  = (read . T.unpack) <$> mGenre
+  $logInfo $ T.pack $ show musicFormat
+  let mMusicGenreText = fromMaybe "Nothing" mGenre
+      musicGenreText = read . T.unpack $ mMusicGenreText :: Maybe [Text]
+      musicGenre = Just <$> map (read . T.unpack) <$> musicGenreText
+  $logInfo $ T.pack $ show musicGenre
   $logInfo $ T.append "genre = " $ T.pack $ show musicGenre
   (titleRes, titleView) <-
     mreq textField
