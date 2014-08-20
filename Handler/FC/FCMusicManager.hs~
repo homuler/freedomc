@@ -1,9 +1,0 @@
-module Handler.FCMusicManager where
-
-import Import
-
-getFCMusicManagerR :: Handler Html
-getFCMusicManagerR = error "Not yet implemented: getFCMusicManagerR"
-
-postFCMusicManagerR :: Handler Html
-postFCMusicManagerR = error "Not yet implemented: postFCMusicManagerR"

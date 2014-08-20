@@ -1,1 +1,0 @@
-var timeBar = d3.select("#time-bar")

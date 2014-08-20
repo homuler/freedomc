@@ -1,6 +1,0 @@
-module FC.MusicData (
-MusicFormat
-) where
-
-data MusicFormat = Video | Sound 
-	deriving (Eq, Show)

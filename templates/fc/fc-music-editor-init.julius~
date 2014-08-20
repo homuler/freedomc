@@ -1,1 +1,0 @@
-window.onload = fc.musicEditor.init();

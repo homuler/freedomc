@@ -1,1 +1,0 @@
-window.onload=function(){fc.musicEditor.init();document.onkeydown=function(e){fc.musicEditor.updateWithKeys(e)}}

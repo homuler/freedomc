@@ -1,4 +1,0 @@
-<p>Hello World!
-$forall music <- musicList
-  <p>#{show $ title music}
-

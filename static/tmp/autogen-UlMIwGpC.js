@@ -1,1 +1,0 @@
-window.onload=function(){$("div.navbar-fixed-top").autoHidingNavbar({showOnUpscroll:true,showOnButton:true,animationDuration:200});var options={url:('http://localhost:3000/freedomc/typing/game'),dataType:'json',success:function(json){console.log(json)}};$.ajax(options)}
