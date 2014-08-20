@@ -1,0 +1,9 @@
+module Handler.FC.Admin.UserList where
+
+import Import
+
+getUserListR :: Handler Html
+getUserListR = error "Not yet implemented: getUserListR"
+
+postUserListR :: Handler Html
+postUserListR = error "Not yet implemented: postUserListR"

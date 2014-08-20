@@ -1,0 +1,1 @@
+window.onload=function(){document.getElementById("loginBtn").onclick=function(){location.href="http://local.homulerdora.org:3000/auth/login"};document.getElementById("logoutBtn").onclick=function(){location.href="http://local.homulerdora.org:3000/auth/logout"}}

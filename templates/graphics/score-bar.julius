@@ -1,0 +1,10 @@
+var timeBar = d3.select("#score-bar")
+                .append("div")
+                .attr("class", "score-bar");
+
+timeBar.selectAll("div")
+       .data([10])
+       .enter()
+       .append("div")
+       .style("width", function(d) { return d*10 * "px" })
+       .text(function(d) { return d; });

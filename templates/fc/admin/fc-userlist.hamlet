@@ -1,0 +1,22 @@
+<div .panel .panel-primary>
+  <div .panel-heading>Freedom Concerto User List
+  <div .panel-body>
+    <p>Freedom Concerto's User List
+  <table .table>
+    <tr>
+      <th>##
+      <th>UserId
+      <th>Admin
+      <th>Operations
+    $forall (num, Entity id user) <- userPairs
+      <tr>
+        <td>#{show num}
+        <td>#{userIdent user}
+        <td>False
+        <td>
+          <form method=post action="">
+            <input type=hidden name=_method value=delete>
+            <button type=submit .btn btn-warning>Delete
+          <form method=post action="">
+            <input type=hidden name=_method value=delete>
+            <button type=submit .btn .btn-primary>toAdmin

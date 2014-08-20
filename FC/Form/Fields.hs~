@@ -1,0 +1,28 @@
+module FC.Form.Fields where
+
+import Import
+import qualified Data.Text as T
+
+multiCheckBoxList :: (Eq a, RenderMessage master FormMessage, Render Message master msg) => [(msg, a)] -> Field Handler [a]
+multiCheckBoxList = multiCheckBox . optionsPairs
+
+multiCheckBox :: (Eq a, RenderMessage master FormMessage) => GHandler sub master (OptionList a) -> Field sub master [a]
+multiCheckBox mOpts = Field
+  { fieldParse = \rawVals _fileInfo -> do
+       opts <- mOpts
+       let (lefts, rights) = partitionEithers $ map (parseHelper opts) rawVals
+       if length lefts > 0
+          then return $ Left $ head lefts
+          else return $ Right $ Just $ catMaybes rights
+   ,fieldView = \idAttr nameAttr otherAttrs eResult isReq -> do
+       opts <- fmap olOptions $ lift mOpts
+       mapM_ (renderField idAttr nameAttr otherAttrs eResult isReq) opts
+   ,fieldEnctype = UrlEncoded }
+  where
+    parseHelper opts val = case val of
+      "" -> Right Nothing
+      v  -> case olReadExternal opts v of
+        Nothing -> Left $ SomeMessage $ MsgInvalidEntry v
+        Just x  -> Right $ Just x
+    renderField idAttr nameAttr otherAttrs eResult iReq opt =
+      $(widgetFile "field/mulit-checkbox")

@@ -1,0 +1,201 @@
+module Handler.FC.Admin.UpdateMusic where
+
+import Import
+import Control.Monad
+import Data.Maybe
+import qualified Data.Text as T
+import System.FilePath
+import System.Directory
+import qualified FC.Data.Typing as FCDT
+import qualified FC.Data.Music as FCDM
+import qualified FC.Form.Fields as FCField
+import qualified FC.Field.Typing as FCFT
+import qualified FC.Typing.IO as FCTI
+
+fcMusicUpdaterForm :: FCTypingMusic -> Html ->
+                      MForm Handler (FormResult FCDT.TypingMusicInfo, Widget)
+fcMusicUpdaterForm musicData extra = do
+  let title = fCTypingMusicTitle musicData
+      musician = fCTypingMusicMusician musicData
+      mGenres  = fCTypingMusicGenre musicData
+      mDifficulty = fCTypingMusicDifficulty musicData
+      format = read . T.unpack $ fCTypingMusicFormat musicData
+      soundSrc = fCTypingMusicSoundPath musicData
+      lyricSrc = fCTypingMusicLyricPath musicData
+      mPictureSrc = fCTypingMusicPicturePath musicData
+      configSrc = fCTypingMusicConfigPath musicData
+  mMusicInfo <- liftIO $ FCTI.parseConfigFile $ T.unpack configSrc
+  $logInfo $ T.pack $ show musicData
+  case mMusicInfo of
+    Nothing ->error "Can't parse the config file"
+    Just musicInfo -> do
+        (titleRes, titleView) <-
+          mreq textField
+          (bootstrapFieldSettings "Music Title") $ Just title
+        (musicianRes, musicianView) <-
+          mreq textField
+          (bootstrapFieldSettings "Musician Name") $ Just musician
+        (genreRes, genreView) <-
+          mopt (FCField.multiCheckBoxList FCDM.genres)
+          "Genre" $ Just <$> (map (read . T.unpack)) <$> mGenres
+        (formatRes, formatView) <-
+          mreq (radioFieldList FCDM.formats)
+          "Format" $ Just FCDM.Video
+        (soundSrcRes, soundSrcView) <-
+          mreq textField
+          (readOnlyFieldSettings "Music Source Path") $ Just soundSrc
+        (soundFileRes, soundFileView) <-
+          mopt fileField
+          "Music Source File" Nothing
+        (lyricSrcRes, lyricSrcView) <-
+          mreq textField
+          (readOnlyFieldSettings "Lyric Source Path") $ Just lyricSrc
+        (pictureSrcRes, pictureSrcView) <-
+          mopt textField
+          (readOnlyFieldSettings "Picture File Path") $ Just <$> mPictureSrc
+        (pictureFileRes, pictureFileView) <-
+          mopt fileField
+          "Picture File" Nothing
+        let packageDir = takeDirectory $ T.unpack lyricSrc
+            titleTest = case titleRes of
+              FormSuccess x -> x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            musicianTest = case musicianRes of
+              FormSuccess x -> x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+        $logInfo titleTest
+        $logInfo musicianTest
+        pictSrcPath <- liftIO $ case pictureFileRes of
+          FormSuccess (Just fileInfo) -> FCTI.writeToServer packageDir fileInfo
+          FormSuccess Nothing -> return "no file uploaded"
+          FormFailure _ -> return "file upload failed"
+          FormMissing -> return "file missing"
+        soundSrcPath <- liftIO $ case soundFileRes of
+          FormSuccess (Just fileInfo) -> FCTI.writeToServer packageDir fileInfo
+          FormSuccess Nothing -> return "no file uploaded"
+          FormSuccess x -> return $ show $ fileName <$> x
+          FormFailure _ -> return "file upload failed"
+          FormMissing -> return "file missing"
+        $logInfo $ T.pack $ "pict src = " ++ pictSrcPath
+        $logInfo $ T.pack $ "sound src = " ++ soundSrcPath
+        pFields <- forM (zip [1..] $ FCDT.problems musicInfo)
+                          (\(i, pb)  -> do
+                            p <- lookupSession (T.pack $ "problem" ++ show i)
+                            st <- lookupSession (T.pack $ "startTime" ++ show i)
+                            ed <- lookupSession (T.pack $ "endTime" ++ show i)
+                            let w = FCDT.display pb
+                                x = fromMaybe (FCDT.problem pb) p
+                                y = read . T.unpack $ fromMaybe (T.pack . show $ FCDT.startTime pb) st
+                                z = read . T.unpack $ fromMaybe (T.pack . show $ FCDT.endTime pb) ed
+                            mreq (FCFT.problemField w i) "Problem Info"
+                              $ Just $ FCDT.ProblemInfo w x y z
+                        )
+        let (problemResList, problemsView) = unzip pFields
+            problemsRes = foldr
+                          (\x acc -> (:) <$> x <*> acc)
+                          (FormSuccess []) problemResList
+            newSoundSrcRes = case soundFileRes of
+                                 FormSuccess fileInfo -> FormSuccess $ T.pack $ pathSeparator:soundSrcPath
+                                 _ -> soundSrcRes
+            newPictureSrcRes = case pictureFileRes of
+                                 FormSuccess fileInfo -> FormSuccess $ Just $ T.pack $ pathSeparator:pictSrcPath
+                                 _ -> pictureSrcRes
+            tmInfoRes = FCDT.TypingMusicInfo <$> titleRes
+                                             <*> musicianRes
+                                             <*> genreRes
+                                             <*> (T.pack . show <$> formatRes)
+                                             <*> (T.unpack <$> newSoundSrcRes)
+                                             <*> (T.unpack <$> lyricSrcRes)
+                                             <*> ((T.unpack <$>) <$> newPictureSrcRes)
+                                             <*> problemsRes
+            widget = $(widgetFile "fc/fc-music-updater-form")
+            titleTest = case titleRes of
+              FormSuccess x -> x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            musicianTest = case musicianRes of
+              FormSuccess x -> x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            genreTest = case genreRes of
+              FormSuccess x -> show x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            formatTest = case formatRes of
+              FormSuccess x -> show x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            newSoundSrcTest = case newSoundSrcRes of
+              FormSuccess x -> x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            newPictureSrcTest = case newPictureSrcRes of
+              FormSuccess x -> show x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+            problemsTest = case problemsRes of
+              FormSuccess x -> show x
+              FormMissing -> "missing"
+              FormFailure _ -> "failure"
+        $logInfo $ titleTest
+        $logInfo $ musicianTest
+        $logInfo $ T.pack genreTest
+        $logInfo $ T.pack formatTest
+        $logInfo $ newSoundSrcTest
+        $logInfo $ T.pack newPictureSrcTest
+        $logInfo $ T.pack problemsTest
+        $logInfo $ T.pack soundSrcPath
+        $logInfo $ T.pack pictSrcPath
+        return (tmInfoRes, widget)
+
+getFCUpdateMusicR :: Text -> Handler Html
+getFCUpdateMusicR musicId = do
+  mMusicData <- runDB $ get $ fromText2Id musicId
+  case mMusicData of
+    Just musicData -> do
+      ((result, widget), enctype) <- runFormGet $ fcMusicUpdaterForm musicData
+      defaultLayout $ do
+        setTitle "FC -Music Updater-"
+        addScript $ StaticR js_fc_util_js
+        $(widgetFile "fc/fc-music-updater")
+    Nothing -> error "No music data found"
+
+postFCUpdateMusicR :: Text -> Handler Html
+postFCUpdateMusicR musicId = do
+  mMusicData <- runDB $ get $ fromText2Id musicId
+  let temp = FCTypingMusic "" "" Nothing Nothing "Video" "" "" Nothing ""
+  case mMusicData of
+    Just musicData -> do
+      ((result, widget), enctype) <- runFormPost $ fcMusicUpdaterForm musicData
+      case result of
+        FormSuccess musicInfo -> do
+          let jsonPath = fCTypingMusicConfigPath musicData
+          liftIO $ FCTI.saveConfigFile musicInfo $ T.unpack jsonPath
+          $logInfo $ T.append "musicId = " musicId
+          $logInfo $ fCTypingMusicSoundPath musicData
+          $logInfo $ T.pack $ show $ fCTypingMusicPicturePath musicData
+          _ <- mapM (\i -> do
+                        deleteSession $ T.pack $ "problem" ++ show i
+                        deleteSession $ T.pack $ "startTime" ++ show i
+                        deleteSession $ T.pack $ "endTime" ++ show i)
+               [1..(Import.length $ FCDT.problems musicInfo)]
+          runDB $
+            updateWhere [FCTypingMusicId ==. fromText2Id musicId]
+                        [FCTypingMusicSoundPath =. fCTypingMusicSoundPath musicData,
+                         FCTypingMusicPicturePath =. fCTypingMusicPicturePath musicData]
+          setMessage "Music Updated"
+          redirect FCTypingR
+        FormFailure text -> do
+          $logInfo "Form Failure"
+          $logInfo $ T.pack $ show text
+          $logInfo $ T.pack $ show musicData
+          setMessage "Update failed"
+          redirect $ FCUpdateMusicR musicId
+        FormMissing -> do
+          $logInfo "Form Missing"
+          $logInfo $ T.pack $ show musicData
+          setMessage "Some Form is missing"
+          redirect $ FCUpdateMusicR musicId
+    Nothing -> error "Music Data is already deleted"

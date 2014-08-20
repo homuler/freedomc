@@ -1,0 +1,6 @@
+.graph {
+  width: 200px;
+  height: 200px;
+  position: static;
+  float: left;
+}

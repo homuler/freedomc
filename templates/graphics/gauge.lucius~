@@ -1,0 +1,4 @@
+#speed-gauge {
+  opacity: 0.1;
+}
+

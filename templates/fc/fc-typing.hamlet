@@ -1,0 +1,120 @@
+$maybe musicData <- mMusicData
+  <div #typing-game>
+    $if fCTypingMusicFormat musicData == "Video"
+      $maybe pictPath <- fCTypingMusicPicturePath musicData
+        <video #typing-sound .typing-background poster=#{pictPath}>
+          <source src=#{fCTypingMusicSoundPath musicData}>
+      $nothing
+        <video #typing-sound .typing-background>
+          <source src=#{fCTypingMusicSoundPath musicData}>
+    $else
+      <audio #typing-sound controls>
+        <source src=#{fCTypingMusicSoundPath musicData}>
+      $maybe pictPath <- fCTypingMusicPicturePath musicData
+        <img .typing-background src=#{pictPath}>
+      $nothing
+        <img .typing-background src=@{StaticR img_default_thumbnail_png}>
+    <div #game-display>
+      <div .music-info>
+        <div .main-info>
+          <div .title>#{fCTypingMusicTitle musicData}
+          <div .musician >#{fCTypingMusicMusician musicData}
+        <div .sub-info>
+          <div .score-table>
+            <table .table>
+              <tr>
+                <th>Specification
+                <th>
+              <tr>
+                <td>Score Sum
+                <td #score-sum-cell>0
+              <tr>
+                <td>Correct
+                <td #correct-cell>0
+              <tr>
+                <td>Miss
+                <td #miss-cell>0
+              <tr>
+                <td>Combo
+                <td #combo-cell>0
+      <div .game-status>
+        <div #difficulty>Difficulty
+        <div .bar-group>
+          ^{scorebar}
+          ^{timebar}
+        <div .graph-group>
+          <div .board style="margin-top: 50px">
+            ^{gauge}
+            ^{scoreSpec}
+          <div>
+            ^{speedGraph}
+            ^{scoreGraph}
+      <div .problem-info>
+        <div #tempo-mark>Tempo
+        <div #problem-id>Problem Number ##
+        <div #problem-display>
+          <div .ruby #problem-ruby>Problem Ruby
+          <div .caption #problem-caption>Problem Caption
+          <div #problem-raw>Problem Raw
+
+    <div #result-data .result .panel .panel-primary hidden>
+      <div .panel-heading>Score Summary
+      <div .game-info>
+        <table .table>
+          <tr>
+            <th>Music Information
+            <th>
+          <tr>
+            <td .col-md-7>Difficulty
+            <td #res-difficulty>
+          <tr>
+            <td>Max Score
+            <td #res-max-score>
+          <tr>
+            <td>Max-min Type
+            <td #res-max-type>
+      <div .play-info>
+        <table .table>
+          <tr>
+            <th>Play Information
+            <th>Value
+            <th>Score
+          <tr>
+            <td .col-md-7>Correct
+            <td #res-correct>
+            <td #res-correct-score>
+          <tr>
+            <td>Average Speed
+            <td #res-avg-speed>
+            <td #res-avg-speed-score>
+          <tr>
+            <td>Combo
+            <td>-
+            <td #res-combo-score>
+          <tr>
+            <td>Solved
+            <td #res-solved>
+            <td #res-solved-score>
+          <tr>
+            <td>Max Speed
+            <td #res-max-speed>
+            <td #res-max-speed-score>
+          <tr>
+            <td>Max Combo
+            <td #res-max-combo>
+            <td #res-max-combo-score>
+      <hr>
+      <div .result-summary>
+        <div .row>
+          <p .col-md-9>Score Sum Raw
+          <div #res-score-sum-raw>
+        <div .row>
+          <p .col-md-9>Correction Rate
+          <div #res-correct-rate>
+        <hr>
+        <div .row>
+          <p .col-md-9>Score Sum
+          <div #res-score-sum>
+      <div .result-btn>
+        <button #post-btn .form-btn .btn .btn-primary>Post and Back
+        <button #cancel-btn .form-btn .btn .btn-warning>Cancel

@@ -1,0 +1,9 @@
+module Handler.FC.FCHome where
+
+import Yesod.Auth
+import Import
+getFCHomeR :: Handler Html
+getFCHomeR = do
+  defaultLayout $ do
+    setTitle "Freedom Concerto"
+    $(widgetFile "fc/home")

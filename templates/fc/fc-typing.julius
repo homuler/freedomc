@@ -1,0 +1,45 @@
+var fc = fc || {};
+fc.typing = fc.typing || {};
+fc.typing.status = fc.typing.status || {};
+fc.typing.events = fc.typing.events || {};
+
+fc.typing.events.postRecord = function(){
+    var playInfo = fc.typing.status.playInfo,
+        gameInfo = fc.typing.status.gameInfo,
+        postBtn = this;
+    $('<form/>', { action: '@{FCTypingGameR}', method: 'post'})
+    .append($('<input/>', {type: 'hidden', name: 'score-sum-val', value: playInfo.scoreFuncs.getScoreSum()}))
+    .append($('<input/>', {type: 'hidden', name: 'difficulty-val', value: fc.typing.constants.difficulties[gameInfo.difficulty]}))
+    .appendTo(document.body)
+    .submit();
+};
+
+window.onload = function(){
+    $("div.navbar-fixed-top").autoHidingNavbar(
+        {showOnUpscroll: true,
+         showOnButton: true,
+         animationDuration: 200}
+    );
+    console.log("onload event");
+    var gameInfo = fc.typing.status.gameInfo,
+        playInfo = fc.typing.status.playInfo;
+    gameInfo.problemData = #{rawJS configData}.problems;
+    //document.onkeydown = fc.typing.events.keyDownEvent;
+    $(document).on("keypress", fc.typing.events.keyPressEvent);
+    $(document).on("keydown", fc.typing.events.controlWithKeys);
+    playInfo.flag.loaded = true;
+    gameInfo.setProblemList();
+    gameInfo.difficulty = gameInfo.evalDifficulty(gameInfo.problemData);
+    fc.typing.graphics.renderGraphics();
+    playInfo.scoreConstants.resetValue();
+    console.log("loaded");
+    console.log(fc.typing.status.gameInfo);
+    $("#post-btn").on("click", function(e){
+      console.log("form called");
+      e.preventDefault();
+      fc.typing.events.postRecord();
+    });
+    $("#cancel-btn").on("click", function(e){
+        location.href='@{FCTypingR}';
+    });
+}

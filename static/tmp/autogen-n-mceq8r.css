@@ -1,0 +1,165 @@
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+audio,video {
+    width: 100%;
+    padding: 5px;
+    vertical-align: middle;
+    z-index: 99;
+}
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+.music-thumbnail {
+    width: 100%;
+    min-height: 250px;
+    line-height: 250px;
+    z-index: 1;
+}
+html {
+    background-color: white;
+}
+#popup-thumbnail {
+    position: fixed !important;
+    margin: 0 auto;
+    top: 10%;
+    opacity: 0.9;
+}
+#popup-thumbnail img {
+    max-height: 100%;
+    min-height: 100%;
+}
+#popup-thumbnail video {
+    max-height: 100%;
+    max-width: 100%;
+}
+#popup-thumbnail audio {
+    max-width: 100%;
+    max-height: 100%;
+}

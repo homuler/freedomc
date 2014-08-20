@@ -1,0 +1,2 @@
+<div .graph #speed-gague style="position: static; float: left; width: 200px; height: 200px">
+  <div #container-speed style="width: 200px; height: 200px">

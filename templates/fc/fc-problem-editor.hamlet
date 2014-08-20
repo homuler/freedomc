@@ -1,0 +1,16 @@
+<div .form-group>
+  <div .form-group>
+    <label .col-md-3 .control-label>display #{idNum}
+    <div .col-md-8>
+      <input #display-#{idAttr} name=#{nameAttr} .form-control *{otherAttrs} value=#{either id id $ display <$> eResult} readonly :isReq:required>
+  <div .required .form-group>
+    <label .col-md-3 .control-label>problem #{idNum}
+    <div .col-md-8>
+      <input #problem-#{idAttr} name=#{nameAttr} .form-control .problem *{otherAttrs} value=#{either id id $ problem <$> eResult} :isReq:required>
+  <div .form-group>
+    <label .col-md-3 .control-label>start time
+    <div .col-md-3>
+      <input #start-#{idAttr} name=#{nameAttr} type="number" .start-time .form-control" *{otherAttrs} value=#{either id id $ getEitherResult eResult startTime} :isReq:required>
+    <label .col-md-2 .control-label>stop time
+    <div .col-md-3>
+      <input #end-#{idAttr} name=#{nameAttr} type="number" .end-time .form-control *{otherAttrs} value=#{either id id $ getEitherResult eResult endTime} :isReq:required>

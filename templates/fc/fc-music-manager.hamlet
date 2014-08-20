@@ -1,0 +1,6 @@
+<ol>
+  <li>Music Add
+    <form method=post action=@{FCMusicManagerR} enctype=#{formEnctype}>
+      ^{musicWidget}
+      ^{lyricWidget}
+      <input type="submit" value="Upload Music Data">

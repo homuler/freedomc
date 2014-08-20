@@ -1,0 +1,32 @@
+<div .panel .panel-primary>
+  <div .panel-heading>Typing Music List
+  <div .panel-body>
+    <p>Freedom Concerto's Typing Music List
+  <table .table>
+    <tr>
+      <th>##
+      <th>Title
+      <th>Musician
+      <th>Genre
+      <th>Music Format
+      <th>Operations
+    $forall (num, Entity id music) <- musicPairs
+      <tr>
+        <td>#{show num}
+        <td>#{fCTypingMusicTitle music}
+        <td>#{fCTypingMusicMusician music}
+        $maybe genreList <- fCTypingMusicGenre music
+          <td>
+            $forall genre <- genreList
+              #{genre}, #
+        <td>#{fCTypingMusicFormat music}
+        <td>
+          <div .form-group .col-md-3>
+            <form method=post action=@{FCDeleteMusicR $ fromId2Text id}>
+              <input type=hidden name=_method value=delete>
+              <button type=submit .btn .btn-warning>Delete
+          <div .form-group .col-md-3>
+            <form method=get action=@{FCUpdateMusicR $ fromId2Text id}>
+              <button type=submit .btn .btn-primary>Update
+<div .row>
+  <a .btn .btn-primary href=@{FCTypingR} role=button>Back

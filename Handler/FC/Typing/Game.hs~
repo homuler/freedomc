@@ -1,0 +1,28 @@
+module Handler.FC.Typing.Game where
+
+import Import
+import Data.Maybe
+
+getFCTypingGameR :: Handler Html
+getFCTypingGameR = do
+  mMusicId <- lookupSession "gameMusicId"
+  let musicId = fromJust $ fromText2Id <$> mMusicId :: FCTypingMusicId
+  mMusicData <- runDB $ get musicId
+  fullscreenLayout $ do
+    setTitle "FC -Typing Game-"
+    addStylesheetRemote "http://fonts.googleapis.com/css?family=Poiret+One"
+--    addScript $ StaticR js_highcharts_js
+--    addScript $ StaticR js_highcharts_more_js
+--    addScript $ StaticR js_modules_solid_gauge_src_js
+--    addScript $ StaticR js_modules_exporting_js
+    addScript $ StaticR js_fc_typing_js
+    let gauge = $(widgetFile "graphics/gauge")
+        scorebar = $(widgetFile "graphics/score-bar")
+        timebar = $(widgetFile "graphics/time-bar")
+        speedGraph = $(widgetFile "graphics/speed-graph2") :: Widget
+        scoreSpec = $(widgetFile "graphics/score-spec")
+        scoreGraph = $(widgetFile "graphics/score-graph2")
+    $(widgetFile "fc/fc-typing")
+
+postFCTypingGameR :: Handler Html
+postFCTypingGameR = error "Not yet implemented: postFCTypingGameR"

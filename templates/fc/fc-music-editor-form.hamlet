@@ -1,0 +1,61 @@
+#{extra}
+<div .form-group>
+  <div class="required form-group">
+    <label class="col-md-2 control-label">Music Title
+    <div class="col-md-5">
+      ^{fvInput titleView}
+  <div class="required form-group">
+    <label class="col-md-2 control-label">Musician Name
+    <div class="col-md-5">
+      ^{fvInput musicianView}
+  <div class="optional form-group">
+    <label class="col-md-2 control-label">Genre
+    <div class="col-md-5">
+      ^{fvInput genreView}
+  <div .required .form-group hidden>
+    <label .col-md-2 .control-label>Music FilePath
+    <div .col-md-5>
+      ^{fvInput soundView}
+  <div .required .form-group hidden>
+    <label .col-md-2 .control-label>Lyric FilePath
+    <div .col-md-5>
+      ^{fvInput lyricView}
+  <div .required .form-group hidden>
+    <label .col-md-2 .control-label>Picture FilePath
+    <div .col-md-5>
+      ^{fvInput pictureView}
+  <div class="form-group">
+    <div class="form-group col-md-6">
+      $maybe soundSrc <- mSoundSrc
+        $if musicFormat == FCDM.Video
+          <video #fc-music>
+            <source src=#{soundSrc}>
+        $else
+          <audio #fc-music>
+            <source src=#{soundSrc}>
+      <label class="col-md-6 control-label">Focused Problem Number
+      <div .col-md-3>
+        <input #focusNum type=number .form-control min=1 max=#{Import.length lyricPairs} step=1 value=1>
+      <div .col-md-12>
+        <div .row>
+          <div .col-md-6>
+            <p>Play : <kbd>ctrl + space</kbd>
+          <div .col-md-6>
+            <p>Pause: <kbd>ctrl + q</kbd>
+        <div .row>
+          <div .col-md-6>
+            <p>Forward: <kbd>ctrl + →</kbd>
+          <div .col-md-6>
+            <p>Backward: <kbd>ctrl + ←</kbd>
+        <div .row>
+          <div .col-md-6>
+            <p>toEnd: <kbd>ctr + shift + →</kbd>
+          <div .col-md-6>
+            <p>toStart: <kbd>ctr + shift + ←</kbd>
+        <div .row>
+          <p>Copy Time(Stop time is the same with Start time): <kbd>ctrl + Enter</kbd>
+        <div .row>
+          <p>Copy Time(Start time only): <kbd>ctrl + shift + Enter</kbd>
+    <div .form-group .col-md-6 style="height: 400px; overflow-x:hidden; overflow-y:scroll;">
+      $forall problemView <- problemsView
+        ^{fvInput problemView}

@@ -1,0 +1,19 @@
+<div .col-md-4>
+  <video>
+    <source src=#{fCTypingMusicSoundPath musicData}>
+  <div .row>
+    <label .col-md-4 control-label>Title
+    <div .col-md-8>#{fCTypingMusicTitle musicData}
+  <div .row>
+    <label .col-md-4 control-label>Musician
+    <div .col-md-8>#{fCTypingMusicMusician musicData}
+  <div .row>
+    <label .col-md-4 control-label>Difficulty
+    <div .col-md-8>Extreme
+  <div .row>
+    <label .col-md-4 control-label>Music Length
+    <div .col-md-8>5:30
+  <div .row>
+    <label .col-md-4 control-label>Genre
+    <div .col-md-8>Anime, OP
+  <hr>

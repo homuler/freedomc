@@ -1,0 +1,16 @@
+var fc = fc || {};
+fc.thumbnail = fc.thumbnail || {};
+
+(function(ns){
+    ns.musicSrc = ns.musicSrc || {};
+    ns.musicSrc["#{rawJS $ fromId2Text musicId}"] =
+        {
+            path: "#{rawJS $ fCTypingMusicSoundPath musicData}",
+            format: "#{rawJS $ fCTypingMusicFormat musicData}"
+        };
+    console.log(ns.musicSrc);
+})(fc.thumbnail = fc.thumbnail || {});
+
+window.onload = function(){
+    fc.thumbnail.init();
+};

@@ -1,0 +1,24 @@
+Default: &defaults
+  user: hello
+  password: hello
+  host: localhost
+  port: 5432
+  database: hello
+  poolsize: 10
+
+Development:
+  <<: *defaults
+
+Testing:
+  database: hello_test
+  <<: *defaults
+
+Staging:
+  database: hello_staging
+  poolsize: 100
+  <<: *defaults
+
+Production:
+  database: hello_production
+  poolsize: 100
+  <<: *defaults

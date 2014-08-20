@@ -1,0 +1,30 @@
+var fc = fc || {};
+fc.typing = fc.typing || {};
+fc.typing.status = fc.typing.status || {};
+
+window.onload = function(){
+    $("div.navbar-fixed-top").autoHidingNavbar(
+        {showOnUpscroll: true,
+         showOnButton: true,
+         animationDuration: 200}
+    );
+    var options = {
+        url:('@{FCTypingConfigR $ fromId2Text musicId}'),
+        dataType: 'json',
+        success: function(json){
+            console.log(json);
+            fc.typing.problemData = json.problems;
+            fc.typing.init();
+            document.onkeydown = fc.typing.events.keyDownEvent;
+            fc.typing.status.loaded = true;
+            console.log("loaded");
+        }
+    };
+    console.log("onload event");
+    //$.ajax(options);
+    fc.typing.problemData = #{rawJS configData}.problems;
+    fc.typing.init();
+    document.onkeydown = fc.typing.events.keyDownEvent;
+    fc.typing.status.loaded = true;
+    console.log("loaded");
+}

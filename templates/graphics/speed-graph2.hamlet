@@ -1,0 +1,2 @@
+<div .graph>
+  <canvas #speed-graph width="200" height="200">

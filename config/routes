@@ -1,0 +1,19 @@
+/static StaticR Static getStatic
+/auth   AuthR   Auth   getAuth
+
+/favicon.ico FaviconR GET
+/robots.txt RobotsR GET
+
+/ HomeR GET POST
+/freedomc FCHomeR GET
+/freedomc/typing FCTypingR GET POST
+/freedomc/settings FCSettingR GET
+/freedomc/music/manager FCMusicManagerR GET POST
+/freedomc/typing/register FCMusicRegisterR GET POST
+/freedomc/typing/register/#Text FCMusicEditorR GET POST
+/freedomc/typing/select FCMusicListR GET
+/freedomc/typing/delete/#Text FCDeleteMusicR POST
+/freedomc/typing/game FCTypingGameR GET POST
+/freedomc/typing/config/#Text FCTypingConfigR GET
+/freedomc/admin/users UserListR GET
+/freedomc/admin/update/#Text FCUpdateMusicR GET POST

@@ -1,0 +1,17 @@
+<div .jumbotron>
+  <h1>Welcom to FC Typing!
+  <p>This is a Typing Game Site.
+  <div .row>
+    <div .pull-right>
+      <a .btn .btn-default href=@{FCMusicRegisterR} role=button>add Music
+      <a .btn .btn-default href=@{FCMusicListR} role=button>Get Music List
+<div .container>
+  <h2>Music List
+  $forall thumbnail <- thumbnails
+    ^{thumbnail}
+<div #popup-thumbnail>
+  <form #game-form name=game-form method=post action=@{FCTypingR}>
+    <input #game-id type=number name=game-id value="-1" hidden>
+  <div .select-btn-group>
+    <div #play-btn .btn .btn-primary>Play
+    <div #cancel-btn .btn .btn-warning>Cancel

@@ -1,0 +1,157 @@
+#score-bar {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 2px;
+    margin: 1px;
+    color: white;
+}
+#time-bar {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 2px;
+    margin: 1px;
+    color: white;
+}
+#speed-gauge {
+    opacity: 0.1;
+}
+#speed-gauge g.arc {
+    fill: steelblue;
+}
+#speed-gauge g.pointer {
+    fill: #e85116;
+    stroke: #b64011;
+}
+#speed-gauge g.label text {
+    text-anchor: middle;
+    font-size: 14px;
+    font-weight: bold;
+    fill: #666;
+}
+body {
+    background-color: #fff;
+    color: #555;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+}
+.graph {
+    width: 200px;
+    height: 200px;
+    position: static;
+    float: left;
+    margin-left: 30px;
+}
+#music-back {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    max-width: 100%;
+    width: 100%;
+    z-index: -1000;
+    overflow: hidden;
+}
+#music-info {
+    position: static;
+    float: left;
+    margin-left: 10%;
+    font-weight: bold;
+    font-family: 'Poiret One', cursive
+;
+}
+div#game-status {
+    position: static;
+    float: left;
+    margin-left: 10%;
+}
+div#title {
+    color: white;
+    font-size: 5em;
+    font-weight: bold;
+    font-family: 'Poiret One', cursive
+;
+}
+div#musician {
+    color: white;
+    font-size: 3em;
+    margin-left: 10%;
+    font-weight: bold;
+    font-family: 'Poiret One', cursive
+;
+}
+div#game-status {
+    position: static;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10%;
+}
+div .board {
+    position: static;
+    float: bottom;
+    margin-right: 10%;
+    margin-bottom: 10%;
+}
+div#problem-id {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+    margin-left: auto;
+}
+div#combo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#score {
+    font-size: 2.0em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#speed {
+    font-size: 2.0em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#success {
+    font-size: 2.0em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#miss {
+    font-size: 2.0em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#problem-info {
+    position: fixed;
+    bottom: 20%;
+    left: 10%;
+}
+div#caption {
+    font-size: 3.0em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+}
+div#problem {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 5px 5px 1px #999999;
+    margin: 10px;
+}
+div #play-box {
+    position: static;
+    float: left;
+    float: bottom;
+    margin-top: 40%;
+    margin-bottom: 10px;
+}

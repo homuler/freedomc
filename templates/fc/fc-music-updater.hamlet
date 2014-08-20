@@ -1,0 +1,4 @@
+<div id="editor">
+  <form .form-horizontal role=form method=post action=@{FCUpdateMusicR musicId} enctype=multipart/form-data>
+    ^{widget}
+    <button type=submit .btn .btn-default>Submit

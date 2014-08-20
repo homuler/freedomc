@@ -1,0 +1,4 @@
+<label .checkbox-inline>
+  $with extVal <- optionExternalValue opt
+    <input type=checkbox id=#{idAttr}-#{extVal} *{otherAttrs} name=#{nameAttr} value=#{extVal}>
+  

@@ -1,0 +1,5 @@
+<form .form-horizontal role=form method=post action=@{FCMusicRegisterR} enctype=#{enctype}>
+  ^{widget}
+  <div .form-group .center-block>
+    <a .btn .btn-default href=@{FCTypingR} role=button>Back
+    <button type=submit .btn .btn-default>Upload Music File

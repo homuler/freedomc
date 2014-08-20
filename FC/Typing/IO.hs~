@@ -1,0 +1,14 @@
+module FC.Typing.IO where
+
+import Import
+import qualified FC.Data.Typing as FCDT
+import qualified Data.ByteString.Lazy as B
+import Data.Aeson
+
+saveConfigFile :: (ToJSON a) => a -> FilePath -> IO ()
+saveConfigFile x path = B.writeFile path $ encode x
+
+parseConfigFile :: FilePath -> IO (Maybe FCDT.TypingMusicInfo)
+parseConfigFile path = do
+  file <- B.readFile path
+  return $ decode file

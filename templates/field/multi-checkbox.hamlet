@@ -1,0 +1,9 @@
+$forall opt <- opts
+  <label .checkbox-inline .control-label>
+  $with extVal <- optionExternalValue opt
+    $case eResult
+      $of Right xs
+        $with isChecked <- elem (optionInternalValue opt) xs
+          <input type=checkbox id=#{idAttr}-#{extVal} *{otherAttrs} name=#{nameAttr} value=#{extVal} :isChecked:checked>#{optionDisplay opt}
+      $of Left _
+        <input type=checkbox id=#{idAttr}-#{extVal} *{otherAttrs} name=#{nameAttr} value=#{extVal}>#{optionDisplay opt}

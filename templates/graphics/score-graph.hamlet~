@@ -1,0 +1,1 @@
+<div #score-graph style="position: static; float: right; min-width: 250px; width: 250px; height: 400px; margin: 0 auto">

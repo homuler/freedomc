@@ -1,0 +1,2 @@
+<div .graph>
+  <canvas #score-graph width="200" height="200">

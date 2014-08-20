@@ -1,0 +1,9 @@
+<p>Authentication: #{show maid}
+$maybe _ <- maid
+  <p>
+    <a href=@{AuthR LogoutR}>Logout
+$nothing
+  <p>
+    <a href=@{AuthR LoginR}>Go to the login page.
+<a href=@{FCTypingR}>
+  Odyssey
