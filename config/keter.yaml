@@ -1,4 +1,4 @@
-exec: ../dist/build/hello/hello
+exec: ../dist/build/freedomc/freedomc
 args:
     - production
 host: <<HOST-NOT-SET>>
