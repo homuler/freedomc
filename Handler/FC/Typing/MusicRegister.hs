@@ -9,6 +9,7 @@ import System.Directory
 import qualified Data.Text as T
 import qualified Data.Char as C
 import Control.Monad
+import Data.Maybe
 
 musicUploadForm :: Html -> MForm Handler (FormResult FCDM.MusicData, Widget)
 musicUploadForm extra = do
@@ -70,30 +71,54 @@ postFCMusicRegisterR = do
       lyricFilename <- liftIO $ FCTI.writeToServer packageDir
                        (FCDM.lyricData musicData)
       pictureFilename <- case (FCDM.pictureData musicData) of
-           Just pictureFile -> liftIO $ FCTI.writeToServer packageDir
-                              pictureFile
-           _ -> return ""
-      _ <- case (FCDM.configData musicData) of
-           Just configFile -> liftIO $ FCTI.writeToServer packageDir
-                              configFile
-           _ -> return ""
+           Just pictureFile -> liftIO $ Just <$> (FCTI.writeToServer packageDir
+                              pictureFile)
+           _ -> return Nothing
+      configFilename <- case (FCDM.configData musicData) of
+           Just configFile -> liftIO $ Just <$> (FCTI.writeToServer packageDir
+                              configFile)
+           _ -> return Nothing
       $logInfo $ T.append (FCDM.title musicData) $ T.pack "'s lyric data has been saved."
-      setMessage "Music Data saved"
-      setSession "mTitle" $ FCDM.title musicData
-      setSession "mMusician" $ FCDM.musician musicData
-      setSession "mGenre" $ (T.pack . show) $ FCDM.genre musicData
-      case FCDM.format musicData of
-        FCDM.Video -> setSession "mFormat" "Video"
-        FCDM.Sound -> setSession "mFormat" "Sound"
-      setSession "mSoundSrc" $ T.pack $ pathSeparator:musicFilename
-      setSession "mLyricSrc" $ T.pack lyricFilename
-      setSession "mPictureSrc" $
-        case pictureFilename of
-             "" -> "Nothing"
-             _ -> T.pack . show $ Just $ pathSeparator:pictureFilename
-      setSession "mConfigSrc" $ (T.pack . show) $ fileName
-        <$> FCDM.configData musicData
-      redirect $ FCMusicEditorR $ FCDM.title musicData
+      let mTitle = FCDM.title musicData
+          mMusician = FCDM.musician musicData
+          mGenre = (map $ T.pack .show) <$> FCDM.genre musicData
+          mFormat = FCDM.format musicData
+          mSoundSrc = T.pack $ pathSeparator:musicFilename
+          mLyricSrc = T.pack lyricFilename
+          mPictureSrc = T.pack <$> ((pathSeparator:) <$> pictureFilename)
+          mConfigSrc = T.pack <$> configFilename
+      case configFilename of
+        Just configPath -> do
+          configData <- liftIO $ FCTI.parseConfigFile configPath
+          case configData of
+            Just _ -> do
+              _ <- runDB $ insert $
+                   FCTypingMusic
+                   (FCDM.title musicData)
+                   (FCDM.musician musicData)
+                   ((map $ T.pack . show) <$> FCDM.genre musicData)
+                   Nothing
+                   (T.pack $ show mFormat)
+                   mSoundSrc
+                   mLyricSrc
+                   mPictureSrc
+                   (fromJust mConfigSrc)
+              redirect FCTypingR
+            Nothing -> do
+              setSessions mTitle mMusician mGenre mFormat mSoundSrc mLyricSrc mPictureSrc
+              redirect $ FCMusicEditorR mTitle
+        Nothing -> do
+          setSessions mTitle mMusician mGenre mFormat mSoundSrc mLyricSrc mPictureSrc
+          redirect $ FCMusicEditorR mTitle
     _ -> do
       setMessage "Music Data Saving Process Failed"
       redirect FCMusicRegisterR
+    where setSessions mTitle mMusician mGenre mFormat mSoundSrc mLyricSrc mPictureSrc = do
+            setMessage "Music Data saved"
+            setSession "mTitle" mTitle
+            setSession "mMusician" mMusician
+            setSession "mGenre" $ T.pack $ show mGenre
+            setSession "mFormat" $ T.pack $ show mFormat
+            setSession "mSoundSrc" mSoundSrc
+            setSession "mLyricSrc" mLyricSrc
+            setSession "mPictureSrc" $ (T.pack . show) $ mPictureSrc

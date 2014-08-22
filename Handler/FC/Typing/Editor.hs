@@ -23,7 +23,6 @@ fcMusicEditorForm extra = do
   mSoundSrc <- lookupSession "mSoundSrc"
   mLyricSrc <- lookupSession "mLyricSrc"
   mPictureSrc <- lookupSession "mPictureSrc"
-  mConfigSrc <- lookupSession "mConfigSrc"
   $logInfo $ T.append "genre = " $ T.pack $ show mGenre
   lyrics <- case mLyricSrc of
     Just lyricSrc -> liftIO . readLyrics $ T.unpack lyricSrc
