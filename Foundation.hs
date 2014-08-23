@@ -115,7 +115,7 @@ instance Yesod App where
     makeLogger = return . appLogger
 
     maximumContentLength _ (Just FCMusicRegisterR) = Just $ 500 * 1024 * 1024
-    maximumContentLength _ (Just (FCUpdateMusicR _)) = Just $ 100 * 1024 * 1024
+    maximumContentLength _ (Just (FCUpdateMusicR _)) = Just $ 200 * 1024 * 1024
     maximumContentLength _ _ = Just $ 2 * 1024 * 1024
 
 isLoggedIn :: Handler AuthResult

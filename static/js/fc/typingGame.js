@@ -566,6 +566,14 @@ fc.typing.events = fc.typing.events || {};
     ns.difficulty = 0;
     ns.maxScore = 0;
     ns.maxType = 0;
+    ns.scoreRate = {
+        correct: 0.4,
+        speed: 0.3,
+        maxSpeed: 0.05,
+        combo: 0.1,
+        maxCombo: 0.1,
+        solved: 0.05
+    };
 
     ns.evalDifficulty = function (problemData){
         var chCount = 0.
@@ -697,16 +705,16 @@ fc.typing.events = fc.typing.events || {};
             ns.scoreConstants.m = gameInfo.maxType;
             var M = ns.scoreConstants.M,
                 m = ns.scoreConstants.m;
-            ns.scoreConstants.correctK = 0.8*M / (m*(m + 1));
-            ns.scoreConstants.solvedK = 0.05*M / gameInfo.problemData.length;
-            ns.scoreConstants.comboK = 0.2*M / (m*(m + 1))
-            ns.scoreConstants.speedA = 0.3*M / (Math.pow(300, 3) + Math.pow(200, 3));
+            ns.scoreConstants.correctK = 2*gameInfo.scoreRate.correct*M / (m*(m + 1));
+            ns.scoreConstants.solvedK = gameInfo.scoreRate.solved*M / gameInfo.problemData.length;
+            ns.scoreConstants.comboK = 2*gameInfo.scoreRate.combo*M / (m*(m + 1))
+            ns.scoreConstants.speedA = gameInfo.scoreRate.speed*M / (Math.pow(300, 3) + Math.pow(200, 3));
             var speedA = ns.scoreConstants.speedA;
             ns.scoreConstants.speedB = speedA*Math.pow(300, 3);
-            ns.scoreConstants.maxSpeedA = 0.1*M / (Math.pow(400, 3) + Math.pow(200, 3));
+            ns.scoreConstants.maxSpeedA = gameInfo.scoreRate.maxSpeed*M / (Math.pow(400, 3) + Math.pow(200, 3));
             var maxSpeedA = ns.scoreConstants.maxSpeedA;
             ns.scoreConstants.maxSpeedB = maxSpeedA*Math.pow(400, 3);
-            ns.scoreConstants.maxComboA =0.2*M / Math.pow(m, 3);
+            ns.scoreConstants.maxComboA =2*gameInfo.scoreRate.maxCombo*M / Math.pow(m, 3);
             var maxComboA = ns.scoreConstants.maxComboA;
             ns.scoreConstants.maxComboB = maxComboA*Math.pow(m, 3)/8;
             //console.log("scoreConstants");
@@ -1011,29 +1019,36 @@ fc.typing.events = fc.typing.events || {};
     ns.displayFinPage = function(){
         var nodes = fc.typing.nodes,
             gameInfo = fc.typing.status.gameInfo;
+            util = fc.typing.util;
         nodes.$resultData.removeAttr("hidden");
         nodes.$resDifficulty.html(fc.typing.constants.difficulties[gameInfo.difficulty]);
         nodes.$resMaxScore.html(gameInfo.maxScore);
         nodes.$resMaxType.html(gameInfo.maxType);
+        var correctRate = util.roundN(100 * ns.score.correct / (gameInfo.scoreRate.correct * gameInfo.maxScore), 2),
+            speedRate = util.roundN(100 * ns.score.correct / (gameInfo.scoreRate.speed * gameInfo.maxScore), 2),
+            comboRate = util.roundN(100 * ns.score.combo / (gameInfo.scoreRate.combo * gameInfo.maxScore), 2),
+            maxSpeedRate = util.roundN(100 * ns.score.maxSpeed / (gameInfo.scoreRate.maxSpeed * gameInfo.maxScore), 2),
+            maxComboRate = util.roundN(100 * ns.score.maxCombo / (gameInfo.scoreRate.maxCombo * gameInfo.maxScore), 2),
+            solvedRate = util.roundN(100 * ns.score.solved / (gameInfo.scoreRate.solved * gameInfo.maxScore), 2);
         nodes.$resCorrect.html(ns.spec.correct);
-        nodes.$resCorrectScore.html(ns.score.correct);
+        nodes.$resCorrectScore.html(util.roundN(ns.score.correct, 2) + " (" + correctRate + "%)");
         console.log(ns.score);
         console.log(nodes.$resCorrectScore);
         console.log(ns.spec);
-        nodes.$resAvgSpeed.html(ns.getSpeed());
-        nodes.$resAvgSpeedScore.html(ns.scoreFuncs.getSpeedScore(ns.getSpeed()));
-        nodes.$resComboScore.html(ns.score.combo);
+        nodes.$resAvgSpeed.html(util.roundN(ns.getSpeed(), 2));
+        nodes.$resAvgSpeedScore.html(util.roundN(ns.scoreFuncs.getSpeedScore(ns.getSpeed()), 2) + " (" + speedRate + "%)");
+        nodes.$resComboScore.html(util.roundN(ns.score.combo, 2) + " (" + comboRate + "%)");
         nodes.$resSolved.html(ns.spec.solved);
-        nodes.$resSolvedScore.html(ns.score.solved);
+        nodes.$resSolvedScore.html(util.roundN(ns.score.solved, 2) + " (" + solvedRate + "%)");
         ns.score.maxSpeed = ns.scoreFuncs.getMaxSpeedBonus(ns.spec.maxSpeed);
         ns.score.maxCombo = ns.scoreFuncs.getMaxComboBonus(ns.spec.maxCombo);
-        nodes.$resMaxSpeed.html(ns.spec.maxSpeed);
-        nodes.$resMaxSpeedScore.html(ns.score.maxSpeed);
+        nodes.$resMaxSpeed.html(util.roundN(ns.spec.maxSpeed, 2));
+        nodes.$resMaxSpeedScore.html(util.roundN(ns.score.maxSpeed, 2) + " (" + maxSpeedRate + "%)");
         nodes.$resMaxCombo.html(ns.spec.maxCombo);
-        nodes.$resMaxComboScore.html(ns.score.maxCombo);
-        nodes.$resScoreSumRaw.html(ns.scoreFuncs.getScoreSumRaw());
-        nodes.$resCorrectRate.html(ns.scoreFuncs.getCorrectRate());
-        var sum = ns.scoreFuncs.getScoreSum(),
+        nodes.$resMaxComboScore.html(util.roundN(ns.score.maxCombo, 2) + " (" + maxComboRate + "%)");
+        nodes.$resScoreSumRaw.html(util.roundN(ns.scoreFuncs.getScoreSumRaw(), 2));
+        nodes.$resCorrectRate.html(100*util.roundN(ns.scoreFuncs.getCorrectRate(), 2) + "%");
+        var sum = util.roundN(ns.scoreFuncs.getScoreSum(), 2),
             sumStr = sum + " (" + fc.typing.util.roundN((100*sum/gameInfo.maxScore), 2) + "%)";
         nodes.$resScoreSum.html(sumStr);
     };
@@ -1121,6 +1136,10 @@ fc.typing.events = fc.typing.events || {};
             return true;
 
             function updateGraphics(diffTime, preCorrect){
+                events.callInterval =
+                    isNaN(fc.typing.nodes.typingSound.duration) ?
+                        events.callInterval :
+                        Math.round(fc.typing.nodes.typingSound.duration/2);
                 playInfo.score.maxSpeed = playInfo.scoreFuncs.getMaxSpeedBonus(playInfo.spec.maxSpeed);
                 playInfo.score.maxCombo = playInfo.scoreFuncs.getMaxComboBonus(playInfo.spec.maxCombo);
                 var deltaSpeed =
@@ -1258,7 +1277,6 @@ fc.typing.events = fc.typing.events || {};
         if(e.ctrlKey){
             switch (e.keyCode) {
                 case 32: fc.typing.renderHTML();
-                         ns.callInterval = Math.round(fc.typing.nodes.typingSound.duration/2);
                          fc.typing.nodes.typingSound.play();
                          fc.timers.add(playInfo.renderProblemInfo);
                          fc.timers.add(fc.typing.graphics.updateGraphics());
