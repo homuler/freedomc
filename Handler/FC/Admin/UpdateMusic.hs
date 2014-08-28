@@ -124,7 +124,8 @@ postFCUpdateMusicR musicId = do
           runDB $
             updateWhere [FCTypingMusicId ==. fromText2Id musicId]
                         [FCTypingMusicSoundPath =. T.pack newSoundPath,
-                         FCTypingMusicPicturePath =. T.pack <$> newPicturePath]
+                         FCTypingMusicPicturePath =. T.pack <$> newPicturePath,
+                         FCTypingMusicGenre =.  map (T.pack . show) <$> (FCDT.genre $ FCDT.newMusicInfo newMusicData)]
           setMessage "Music Updated"
           redirect FCTypingR
         FormFailure text -> do
