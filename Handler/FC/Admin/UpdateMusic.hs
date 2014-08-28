@@ -5,7 +5,6 @@ import Control.Monad
 import Data.Maybe
 import qualified Data.Text as T
 import System.FilePath
-import System.Directory
 import qualified FC.Data.Typing as FCDT
 import qualified FC.Data.Music as FCDM
 import qualified FC.Form.Fields as FCField

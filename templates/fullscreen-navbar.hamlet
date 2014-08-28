@@ -33,10 +33,7 @@
                   <a href=#>Sub Sub
       <ul .nav .navbar-nav .navbar-right>
         <li>
-          $maybe userId <- mUserId
-            <a href="#user">#{show userId}
-          $nothing
-            <a href="#user">guest
+          <a href="#user">#{userName}
         <li .navbar-form>
           <button #loginBtn .btn .btn-primary>Sign in
         <li .navbar-form>

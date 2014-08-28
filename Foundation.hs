@@ -19,7 +19,6 @@ import Text.Jasmine (minifym)
 import Text.Hamlet (hamletFile)
 import Yesod.Core.Types (Logger)
 import Data.Text
-import FC.Persistent
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -66,6 +65,9 @@ instance Yesod App where
         master <- getYesod
         mmsg <- getMessage
         mUserId <- maybeAuthId
+        userName <- case mUserId of
+            Just userId -> getUserName userId
+            Nothing -> return "guest"
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -130,6 +132,9 @@ fullscreenLayout widget = do
   master <- getYesod
   mmsg <- getMessage
   mUserId <- maybeAuthId
+  userName <- case mUserId of
+      Just userId -> getUserName userId
+      Nothing -> return "guest"
   pc <- widgetToPageContent $ do
       $(combineStylesheets 'StaticR
           [ css_normalize_css
@@ -139,6 +144,13 @@ fullscreenLayout widget = do
   navbar <- widgetToPageContent
       $(widgetFile "fullscreen-navbar")
   giveUrlRenderer $(hamletFile "templates/fullscreen-layout-wrapper.hamlet")
+
+getUserName :: Key User -> HandlerT App IO Text
+getUserName userId = runDB $ do
+  x <- get userId
+  case x of
+      Just user -> return $ userIdent user
+      Nothing -> error "Who are you?"
 
 -- How to run database actions.
 instance YesodPersist App where

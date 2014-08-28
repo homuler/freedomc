@@ -5,10 +5,7 @@ import qualified FC.Data.Music as FCDM
 import qualified FC.Form.Fields as FCField
 import qualified FC.Typing.IO as FCTI
 import System.FilePath
-import System.Directory
 import qualified Data.Text as T
-import qualified Data.Char as C
-import Control.Monad
 import Data.Maybe
 
 musicUploadForm :: Html -> MForm Handler (FormResult FCDM.MusicData, Widget)
