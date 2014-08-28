@@ -5,7 +5,6 @@ import Yesod
 import Yesod.Static
 import Yesod.Auth
 import Yesod.Auth.BrowserId
-import Yesod.Auth.GoogleEmail
 import Yesod.Default.Config
 import Yesod.Default.Util (addStaticContentExternal)
 import Network.HTTP.Client.Conduit (Manager, HasHttpManager (getHttpManager))
@@ -62,20 +61,27 @@ instance Yesod App where
     makeSessionBackend _ = fmap Just $ defaultClientSessionBackend
         120    -- timeout in minutes
         "config/client_session_key.aes"
-    defaultLayout widget = do
-      master <- getYesod
-      mmsg <- getMessage
-      mUserId <- maybeAuthId
-      pc <- widgetToPageContent $ do
-          $(combineStylesheets 'StaticR
-              [ css_normalize_css
-              , css_bootstrap_min_css
-              ])
-          $(widgetFile "default-layout")
-      navbar <- widgetToPageContent $ do
-          $(widgetFile "default-navbar")
-      giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
+    defaultLayout widget = do
+        master <- getYesod
+        mmsg <- getMessage
+        mUserId <- maybeAuthId
+
+        -- We break up the default layout into two components:
+        -- default-layout is the contents of the body tag, and
+        -- default-layout-wrapper is the entire page. Since the final
+        -- value passed to hamletToRepHtml cannot be a widget, this allows
+        -- you to use normal widget features in default-layout.
+
+        pc <- widgetToPageContent $ do
+            $(combineStylesheets 'StaticR
+                [ css_normalize_css
+                , css_bootstrap_css
+                ])
+            $(widgetFile "default-layout")
+        navbar <- widgetToPageContent $ do
+            $(widgetFile "default-navbar")
+        giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticRoot setting in Settings.hs
@@ -86,10 +92,11 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    isAuthorized FCHomeR _ = isLoggedIn
-    isAuthorized FCTypingR _ = isLoggedIn
-    isAuthorized FCMusicRegisterR _ = isLoggedIn
-    isAuthorized (FCMusicEditorR _) _ = isLoggedIn
+    -- Routes not requiring authenitcation.
+    isAuthorized (AuthR _) _ = return Authorized
+    isAuthorized FaviconR _ = return Authorized
+    isAuthorized RobotsR _ = return Authorized
+    -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
 
     -- This function creates static content files in the static folder
@@ -109,7 +116,7 @@ instance Yesod App where
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
-    shouldLog _ _source level = 
+    shouldLog _ _source level =
         development || level == LevelWarn || level == LevelError
 
     makeLogger = return . appLogger
@@ -117,13 +124,6 @@ instance Yesod App where
     maximumContentLength _ (Just FCMusicRegisterR) = Just $ 500 * 1024 * 1024
     maximumContentLength _ (Just (FCUpdateMusicR _)) = Just $ 200 * 1024 * 1024
     maximumContentLength _ _ = Just $ 2 * 1024 * 1024
-
-isLoggedIn :: Handler AuthResult
-isLoggedIn = do
-  mUserId <- maybeAuthId
-  return $ case mUserId of
-    Nothing -> AuthenticationRequired
-    Just _ -> Authorized
 
 fullscreenLayout :: WidgetT App IO () -> HandlerT App IO Html
 fullscreenLayout widget = do
@@ -148,35 +148,27 @@ instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool
 
 instance YesodAuth App where
-    type AuthId App = Text
+    type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = FCHomeR
+    loginDest _ = HomeR
     -- Where to send a user after logout
-    logoutDest _ = FCHomeR
-    --getAuthId = return . Just . credsIdent
-    authLayout = defaultLayout
-{--    loginHandler = do
-      tp <- getRouteToParent
-      lift $ authLayout $ do
-        setTitleI Msg.LoginTitle
-        master <- getYesod
-        auths <- mapM_ (flip apLogin tp) (authPlugins master)
-        $(widgetFile "auth")--}
+    logoutDest _ = HomeR
+
     getAuthId creds = runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
         case x of
-            Just (Entity _ user) -> return $ Just $ userIdent user
+            Just (Entity uid _) -> return $ Just uid
             Nothing -> do
-                _ <- insert User { userIdent = credsIdent creds
-                            , userPassword = Nothing }
-                return $ Just $ credsIdent creds
+                fmap Just $ insert User
+                    { userIdent = credsIdent creds
+                    , userPassword = Nothing
+                    }
+
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def,
-                     authGoogleEmail]
+    authPlugins _ = [authBrowserId def]
 
     authHttpManager = httpManager
-    maybeAuthId = lookupSession "_ID"
 
 -- This instance is required to use forms. You can modify renderMessage to
 -- achieve customized and internationalized form validation messages.

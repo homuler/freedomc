@@ -1,24 +1,20 @@
 Default: &defaults
-  user: freedomc
-  password: freedomc
-  host: localhost
-  port: 5432
-  database: freedomc
+  database: freedomc.sqlite3
   poolsize: 10
 
 Development:
   <<: *defaults
 
 Testing:
-  database: freedomc_test
+  database: freedomc_test.sqlite3
   <<: *defaults
 
 Staging:
-  database: freedomc_staging
+  database: freedomc_staging.sqlite3
   poolsize: 100
   <<: *defaults
 
 Production:
-  database: freedomc_production
+  database: freedomc_production.sqlite3
   poolsize: 100
   <<: *defaults
