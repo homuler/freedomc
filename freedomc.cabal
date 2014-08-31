@@ -39,6 +39,7 @@ library
                      Handler.FC.Typing.TypingConfig
                      Handler.FC.Admin.UserList
                      Handler.FC.Admin.UpdateMusic
+                     Handler.FC.Typing.Result
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

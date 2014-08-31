@@ -30,7 +30,9 @@ postFCTypingGameR = do
   mMusicId <- lookupSession "gameMusicId"
   mUserIdent <- maybeAuthId
   -- dangerous pattern matching
-  Just (Entity userId _) <- runDB $ selectFirst [UserIdent ==. (T.pack . show $ fromJust mUserIdent)] []
+  let userId = case mUserIdent of
+        Just uid -> uid
+        Nothing  -> error "Unknown Player"
   let musicId = fromJust $ fromText2Id <$> mMusicId
   score <- runInputPost $ ireq textField "score-sum-val"
   difficulty <- runInputPost $ ireq textField "difficulty-val"

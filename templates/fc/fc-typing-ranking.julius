@@ -1,0 +1,24 @@
+window.onload = (function(){
+    var ajaxFin = false;
+    return function(){
+        var option = {
+            type: "GET",
+            url: "@{FCTypingResultR}",
+            dataType: "html",
+            data: {
+                "user": #{rawJS userValue},
+                "musicid": #{rawJS musicidValue}
+            },
+            success: function(data) {
+                $("#ranking-panel").append(data);
+                ajaxFin = true;
+            },
+            error: function() {
+                console.log("problem occured during ajax request.");
+            }
+        };
+        if(!ajaxFin){
+            $.ajax(option);
+        }
+    };
+})();

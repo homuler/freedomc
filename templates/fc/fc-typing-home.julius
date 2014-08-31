@@ -35,31 +35,24 @@ fc.thumbnail = fc.thumbnail || {};
                 console.log(ns.focusId);
                 return;
             }
-            console.log("onmouseover event");
             var musicId = $(this).attr("data-id"),
                 $musicContainer = ns.nodes.musicNodes[musicId];
             ns.focusId = musicId;
-            console.log(musicId);
             ns.nodes.$inputId.attr("value", musicId);
             if($musicContainer){
-                console.log("Ther is already node");
                 console.log($musicContainer);
                 $musicContainer.show();
-                console.log($musicContainer.children(".game-sound"));
                 $musicContainer.children(".game-sound").get(0).play();
                 ns.nodes.$popup.show();
                 return;
             }
-            console.log(ns.musicSrc);
-            console.log(musicId);
-            console.log(ns.nodes.$inputId);
-            console.log(ns.nodes.$form);
             console.log("new element will be created");
             var musicInfo = ns.musicSrc[musicId],
                 pictSrc = $(this).children()[0].getAttribute("src"),
                 $musicNode = musicInfo.format === "Video" ?
                 $("<video>"):
                 $("<audio>");
+            console.log(musicInfo);
             $musicNode.addClass("game-sound");
             $musicNode.attr("loop", true);
             $musicContainer = $("<div>"),

@@ -17,3 +17,5 @@
 /freedomc/typing/config/#Text FCTypingConfigR GET
 /freedomc/admin/users UserListR GET
 /freedomc/admin/update/#Text FCUpdateMusicR GET POST
+/freedomc/typing/result FCTypingResultR GET
+/freedomc/typing/search/record FCTypingShowRankingR GET

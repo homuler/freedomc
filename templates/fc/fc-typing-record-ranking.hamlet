@@ -1,0 +1,32 @@
+$case records
+  $of (mMusicInfo, typingRecords)
+    $maybe musicInfo <- mMusicInfo
+      <div .music-info .panel-body>
+        <table .table>
+          <tr>
+            <th>Title
+            <td>#{fCTypingMusicTitle musicInfo}
+          <tr>
+            <th>Difficulty
+            $maybe difficulty <- fCTypingMusicDifficulty musicInfo
+              <td>#{difficulty}
+            $nothing
+              <td>Unknown
+
+      <div .panel-body>
+        <table .table>
+          <tr>
+            <th>Rank
+            <th>Player
+            <th>Highest Score
+            <th>Average Score
+          $forall record <- typingRecords
+            $case record
+              $of (n, (typingRecord, username))
+                <tr>
+                  <td>#{show n}
+                  <td>#{username}
+                  <td>#{fCTypingRecordMaxScore typingRecord}
+                  <td>#{fCTypingRecordAverage typingRecord}
+    $nothing
+      <div>No Music Found.

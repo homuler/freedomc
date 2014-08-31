@@ -19,6 +19,8 @@ import Text.Jasmine (minifym)
 import Text.Hamlet (hamletFile)
 import Yesod.Core.Types (Logger)
 import Data.Text
+import Data.Maybe
+import Control.Applicative
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -65,9 +67,7 @@ instance Yesod App where
         master <- getYesod
         mmsg <- getMessage
         mUserId <- maybeAuthId
-        userName <- case mUserId of
-            Just userId -> getUserName userId
-            Nothing -> return "guest"
+        userName <- getAuthName
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -99,6 +99,12 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     -- Default to Authorized for now.
+    isAuthorized FCHomeR _ = isLoggedIn
+    isAuthorized FCTypingR _ = isLoggedIn
+    isAuthorized FCMusicRegisterR _ = isLoggedIn
+    isAuthorized (FCMusicEditorR _) _ = isLoggedIn
+    isAuthorized (FCDeleteMusicR _) _ = isLoggedIn
+    isAuthorized (FCUpdateMusicR _) _ = isLoggedIn
     isAuthorized _ _ = return Authorized
 
     -- This function creates static content files in the static folder
@@ -127,14 +133,19 @@ instance Yesod App where
     maximumContentLength _ (Just (FCUpdateMusicR _)) = Just $ 200 * 1024 * 1024
     maximumContentLength _ _ = Just $ 2 * 1024 * 1024
 
+isLoggedIn :: Handler AuthResult
+isLoggedIn = do
+  mUserId <- maybeAuthId
+  return $ case mUserId of
+    Nothing -> AuthenticationRequired
+    Just _  -> Authorized
+
 fullscreenLayout :: WidgetT App IO () -> HandlerT App IO Html
 fullscreenLayout widget = do
   master <- getYesod
   mmsg <- getMessage
   mUserId <- maybeAuthId
-  userName <- case mUserId of
-      Just userId -> getUserName userId
-      Nothing -> return "guest"
+  userName <- getAuthName
   pc <- widgetToPageContent $ do
       $(combineStylesheets 'StaticR
           [ css_normalize_css
@@ -151,6 +162,15 @@ getUserName userId = runDB $ do
   case x of
       Just user -> return $ userIdent user
       Nothing -> error "Who are you?"
+
+getAuthName :: Handler Text
+getAuthName = do
+  mUserId <- maybeAuthId
+  case mUserId of
+      Just userId -> runDB $ do
+                       mUser <- get userId
+                       return $ fromMaybe (error "Who are you?") (userIdent <$> mUser)
+      Nothing -> return "guest"
 
 -- How to run database actions.
 instance YesodPersist App where
