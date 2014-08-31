@@ -30,9 +30,15 @@ getFCTypingResultR = do
         mMusicInfo <- get $ fromText2Id mid
         return (mTypingRecord, mUserInfo, mMusicInfo)
       let records = [(1, record)]
+          (mTR, mUI, mMI) = record
+          played = fromMaybe 0 $ fCTypingRecordPlayed <$> mTR
+          highest = fromMaybe 0 $ fCTypingRecordMaxScore <$> mTR
+          average = fromMaybe 0 $ fCTypingRecordAverage <$> mTR
       selectRep $ do
         provideRep $ return $(shamletFile "templates/fc/fc-typing-record.hamlet")
-        provideRep $ return $ object [ "name" .= name ]
+        provideRep $ return $ object [ "played" .= played,
+                                       "highest" .= highest,
+                                       "average" .= average ]
     (_, Just mid) -> do
       records <- runDB $ do
         usersList <- selectList [] []

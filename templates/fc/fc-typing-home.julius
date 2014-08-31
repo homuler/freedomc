@@ -75,6 +75,42 @@ fc.thumbnail = fc.thumbnail || {};
             $musicContainer.insertBefore("#game-form");
             ns.nodes.$popup.show();
             $musicNode.get(0).play();
+
+            var ajaxOption = {
+                url: "@{FCTypingResultR}",
+                dataType: "json",
+                data: {
+                    "user": "true",
+                    "musicid": musicId
+                },
+                success: function(data){
+                    var $playInfoNode = $("<div>");
+                        $headerNode = $("<p>");
+                        $tableNode = $("<table>");
+
+                    $playInfoNode.attr("class", "play-info");
+                    $headerNode.attr("class", "title");
+                    $tableNode.attr("class", "table");
+                    $headerNode.html("Your Play Data");
+                    $tableNode.append(tableRow("Played", data.played));
+                    $tableNode.append(tableRow("Highest", data.highest));
+                    $tableNode.append(tableRow("Average", data.average));
+                    $playInfoNode.append($headerNode);
+                    $playInfoNode.append($tableNode);
+                    $musicContainer.append($playInfoNode);
+                }
+            };
+            $.ajax(ajaxOption);
+            function tableRow(key, value){
+                var $row = $("<tr>"),
+                    $head = $("<th>"),
+                    $data = $("<td>");
+                $head.html(key);
+                $data.html(value);
+                $row.append($head);
+                $row.append($data);
+                return $row;
+            }
         });
 
      //   ns.setThumnail();

@@ -9,9 +9,9 @@ html {
     border-radius: 20px;
     display: none;
     margin: 0 auto;
-    top: 20%;
-    left: 20%;
-    width: 60%;
+    top: 10%;
+    left: 25%;
+    width: 50%;
     opacity: 0.9;
 
     img , video {
@@ -43,4 +43,13 @@ html {
 #cancel-btn {
     margin: 10px;
     display: inline;
+}
+
+.play-info {
+    padding: 10px;
+}
+
+p.title {
+    font-size: 1.5em;
+    text-align: center;
 }
