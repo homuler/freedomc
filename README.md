@@ -7,7 +7,6 @@ Freedom Concerto -Web Application written with Yesod Framework
 ## Requirements
 
 * haskell-platform (latest)
-* postgresql (>= 9.2)
 
 - - - -
 
@@ -17,15 +16,6 @@ Freedom Concerto -Web Application written with Yesod Framework
 2. install haskell-platform  
 
         yum install haskell-platform  
-
-3. install postgresql  
-        
-        yum install postgresql-server postgresql-devel postgresql-contrib  
-        su - postgres  
-        CREATE USER freedomc WITH PASSWORD 'freedomc';  
-        CREATE DATABASE freedomc;  
-        GRANT ALL PRiVILEGES ON DATABASE freedomc TO freedomc;      
-        \q  
 
 3. update cabal  
    
@@ -40,16 +30,7 @@ If not, edit your .bashrc etc.
     
     PATH=$HOME/.cabal/bin:$PATH  
 
-4. postgresql settings  
-* Edit you conf file  
-ex:
-    
-        vim /var/lib/pgsql/data/pg_hba.conf  
-        local all all password  
-        host all all 127.0.0.1/32 password   
-        host all all ::1/128 password      
-
-5. environment settings  
+4. environment settings  
 * edit settings.yml  
 ex:
 
