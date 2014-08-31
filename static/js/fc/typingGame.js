@@ -1025,7 +1025,7 @@ fc.typing.events = fc.typing.events || {};
         nodes.$resMaxScore.html(gameInfo.maxScore);
         nodes.$resMaxType.html(gameInfo.maxType);
         var correctRate = util.roundN(100 * ns.score.correct / (gameInfo.scoreRate.correct * gameInfo.maxScore), 2),
-            speedRate = util.roundN(100 * ns.score.correct / (gameInfo.scoreRate.speed * gameInfo.maxScore), 2),
+            speedRate = util.roundN(100 * ns.score.speed / (gameInfo.scoreRate.speed * gameInfo.maxScore), 2),
             comboRate = util.roundN(100 * ns.score.combo / (gameInfo.scoreRate.combo * gameInfo.maxScore), 2),
             maxSpeedRate = util.roundN(100 * ns.score.maxSpeed / (gameInfo.scoreRate.maxSpeed * gameInfo.maxScore), 2),
             maxComboRate = util.roundN(100 * ns.score.maxCombo / (gameInfo.scoreRate.maxCombo * gameInfo.maxScore), 2),
