@@ -1019,7 +1019,6 @@ fc.typing.events = fc.typing.events || {};
         var correctRate = util.roundN(100 * ns.score.correct / (gameInfo.scoreRate.correct * gameInfo.maxScore), 2),
             speedRate = util.roundN(100 * ns.score.speed / (gameInfo.scoreRate.speed * gameInfo.maxScore), 2),
             comboRate = util.roundN(100 * ns.score.combo / (gameInfo.scoreRate.combo * gameInfo.maxScore), 2),
-            maxSpeedRate = util.roundN(100 * ns.score.maxSpeed / (gameInfo.scoreRate.maxSpeed * gameInfo.maxScore), 2),
             maxComboRate = util.roundN(100 * ns.score.maxCombo / (gameInfo.scoreRate.maxCombo * gameInfo.maxScore), 2),
             solvedRate = util.roundN(100 * ns.score.solved / (gameInfo.scoreRate.solved * gameInfo.maxScore), 2);
         nodes.$resCorrect.html(ns.spec.correct);
@@ -1030,6 +1029,7 @@ fc.typing.events = fc.typing.events || {};
         nodes.$resSolved.html(ns.spec.solved);
         nodes.$resSolvedScore.html(util.roundN(ns.score.solved, 2) + " (" + solvedRate + "%)");
         ns.score.maxSpeed = ns.scoreFuncs.getMaxSpeedBonus(ns.spec.maxSpeed);
+        var maxSpeedRate = util.roundN(100 * ns.score.maxSpeed / (gameInfo.scoreRate.maxSpeed * gameInfo.maxScore), 2);
         ns.score.maxCombo = ns.scoreFuncs.getMaxComboBonus(ns.spec.maxCombo);
         nodes.$resMaxSpeed.html(util.roundN(ns.spec.maxSpeed, 2));
         nodes.$resMaxSpeedScore.html(util.roundN(ns.score.maxSpeed, 2) + " (" + maxSpeedRate + "%)");
@@ -1132,8 +1132,8 @@ fc.typing.events = fc.typing.events || {};
                         Math.round(fc.typing.nodes.typingSound.duration/2);
                 playInfo.score.maxSpeed = playInfo.scoreFuncs.getMaxSpeedBonus(playInfo.spec.maxSpeed);
                 playInfo.score.maxCombo = playInfo.scoreFuncs.getMaxComboBonus(playInfo.spec.maxCombo);
-                var deltaSpeed =
-                    (playInfo.spec.correct - preCorrect)*60/diffTime;
+                var deltaSpeed = diffTime == 0 ? 0 
+			: (playInfo.spec.correct - preCorrect)*60/diffTime;
                 playInfo.spec.maxSpeed =
                     Math.max(playInfo.spec.maxSpeed, deltaSpeed);
                 ns.updateSpeedGraph(deltaSpeed);
