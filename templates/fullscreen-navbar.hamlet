@@ -6,7 +6,7 @@
         <span class="icon-bar">
         <span class="icon-bar">
         <span class="icon-bar">
-      <a .navbar-brand  href=@{FCHomeR}>Freedom Concerto
+      <a .navbar-brand  href=@{FCTypingR}>Freedom Concerto
     <div .collapse .navbar-collapse>
       <ul .nav .navbar-nav>
         <li .active>

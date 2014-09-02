@@ -10,7 +10,7 @@
     <div .collapse .navbar-collapse>
       <ul .nav .navbar-nav>
         <li .active>
-          <a href=@{FCHomeR}>Home
+          <a href=@{FCTypingR}>Home
         <li>
           <a href="#about">About
         <li>
