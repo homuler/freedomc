@@ -592,8 +592,6 @@ fc.typing.events = fc.typing.events || {};
             maxAvg = Math.max(maxAvg, avg);
         }
         var points = Math.min(calcAvgPoint(sum / chCount), 21) + Math.min(calcMaxAvgPoint(maxAvg), 13);
-        console.log("avg = " + (sum/chCount) + ", max-avg = " + maxAvg);
-        console.log("points = " + points);
         ns.maxType = chCount;
         maxScores = fc.typing.constants.maxScores;
         switch (true) {
@@ -655,7 +653,6 @@ fc.typing.events = fc.typing.events || {};
                 } else if(ch == "ッ" || ch == "っ"){
                     coeff++;
                 } else {
-                    //console.log(problem.charAt(i) + " not found");
                 }
             }
             if(coeff > 0){
@@ -717,8 +714,6 @@ fc.typing.events = fc.typing.events || {};
             ns.scoreConstants.maxComboA =2*gameInfo.scoreRate.maxCombo*M / Math.pow(m, 3);
             var maxComboA = ns.scoreConstants.maxComboA;
             ns.scoreConstants.maxComboB = maxComboA*Math.pow(m, 3)/8;
-            //console.log("scoreConstants");
-            //console.log(ns.scoreConstants);
         }
     };
     ns.spec = {
@@ -831,7 +826,6 @@ fc.typing.events = fc.typing.events || {};
             nodes = fc.typing.nodes;
         if(ns.problemID === 0 && ns.currentProblem === null){
             resetCurrentProblem(ns.problemID);
-            //console.log(ns.currentProblem);
             nodes.$difficulty.html(fc.typing.constants.difficulties[gameInfo.difficulty]);
             nodes.$problemID.html(ns.problemID+1);
             nodes.$problemRuby.html(gameInfo.problemData[ns.problemID].problem);
@@ -849,7 +843,6 @@ fc.typing.events = fc.typing.events || {};
             console.log("play fin");
             ns.flag.justFin = true;
             clearProblems();
-            ns.displayFinPage();
             return false;
         }
 
@@ -869,7 +862,6 @@ fc.typing.events = fc.typing.events || {};
                 console.log(ns.spec);
                 ns.flag.justFin = true;
                 clearProblems();
-                ns.displayFinPage();
                 return false;
             }
             resetCurrentProblem(ns.problemID);
@@ -997,6 +989,7 @@ fc.typing.events = fc.typing.events || {};
         getScoreSumRaw: function(){
             var scoresum = 0;
             for(x in ns.score){
+		console.log(x + " " + ns.score[x]);
                 scoresum += ns.score[x];
             }
             return scoresum;
@@ -1010,8 +1003,6 @@ fc.typing.events = fc.typing.events || {};
         }
     };
     ns.getSpeed = function(){
-        //console.log("totalTime = " + ns.spec.totalTime);
-        //console.log("correct = " + ns.spec.correct);
         if(ns.spec.totalTime == 0){
             return 0;
         }
@@ -1033,9 +1024,6 @@ fc.typing.events = fc.typing.events || {};
             solvedRate = util.roundN(100 * ns.score.solved / (gameInfo.scoreRate.solved * gameInfo.maxScore), 2);
         nodes.$resCorrect.html(ns.spec.correct);
         nodes.$resCorrectScore.html(util.roundN(ns.score.correct, 2) + " (" + correctRate + "%)");
-        console.log(ns.score);
-        console.log(nodes.$resCorrectScore);
-        console.log(ns.spec);
         nodes.$resAvgSpeed.html(util.roundN(ns.getSpeed(), 2));
         nodes.$resAvgSpeedScore.html(util.roundN(ns.scoreFuncs.getSpeedScore(ns.getSpeed()), 2) + " (" + speedRate + "%)");
         nodes.$resComboScore.html(util.roundN(ns.score.combo, 2) + " (" + comboRate + "%)");
@@ -1131,6 +1119,7 @@ fc.typing.events = fc.typing.events || {};
                 diffTime = 0;
             } else if(playInfo.flag.justFin){
                 updateGraphics(diffTime, preCorrect);
+		playInfo.displayFinPage();
                 return false;
             }
             events.status.called++;
@@ -1166,7 +1155,6 @@ fc.typing.events = fc.typing.events || {};
         var typingSpeed = playInfo.getSpeed();
         playInfo.score.speed =
             fc.typing.util.roundN(playInfo.scoreFuncs.getSpeedScore(typingSpeed), 2);
-        //console.log("speed = " + typingSpeed);
         ns.speedGauge.update(fc.typing.util.roundN(typingSpeed, 2));
     };
     ns.updateSpeedGraph = function(speed){
@@ -1180,7 +1168,6 @@ fc.typing.events = fc.typing.events || {};
             fc.typing.util.formatTime(fc.typing.nodes.typingSound.currentTime));
     };
     ns.updateScoreSpec = function(){
-        //console.log(playInfo.score);
         var gameInfo = fc.typing.status.gameInfo;
         ns.scoreSpec.datasets[0].points[0].value =
             fc.typing.util.roundN(playInfo.score.correct, 2)/(0.4*gameInfo.maxScore);
@@ -1228,13 +1215,11 @@ fc.typing.events = fc.typing.events || {};
             return;
         }
         var currentChar = playInfo.currentProblem[0];
-        //console.log(currentChar);
         var isCorrect = false;
         for(var i = 0; i < currentChar.length; i++){
             if(x == currentChar[i][0]){
                 playInfo.spec.correct++;
                 nodes.$correct.html(playInfo.spec.correct);
-         //       console.log("correctNode = " + nodes.$correct);
                 playInfo.score.correct +=
                     playInfo.scoreFuncs.getCorrectScore(playInfo.spec.correct);
                 isCorrect = true;
@@ -1259,7 +1244,6 @@ fc.typing.events = fc.typing.events || {};
                  //           playInfo.problemID++;
                  //           fc.typing.unfocusProblems();
                  //           fc.typing.resetCurrentProblem(fc.typing.status.problemID);
-                 //           console.log(fc.typing.status);
                             break;
                         }
                     } else {
@@ -1302,7 +1286,6 @@ fc.typing.events = fc.typing.events || {};
         }
     };
     ns.postRecord = function(){
-        console.log("postRecord called");
         var $resultForm = fc.typing.nodes.$resultForm,
             scoreInput = document.createElement("input");
         scoreInput.name = "score-sum-val"
