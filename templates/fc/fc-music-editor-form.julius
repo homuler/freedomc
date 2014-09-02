@@ -62,7 +62,9 @@ fc.musicEditor = {};
     };
     ns.updateWithKeys = function(e){
         if (!e) e = window.event;
-        console.log("updateWithKeys called.");
+        if(e.ctrlKey){
+            e.preventDefault();
+        }
 
         var focusNum = parseInt(ns.nodes.focusNumNode.value);
         if(e.ctrlKey && e.shiftKey){

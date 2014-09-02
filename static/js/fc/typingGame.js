@@ -1297,6 +1297,7 @@ fc.typing.events = fc.typing.events || {};
         if(!e) e = window.event;
 
         if(!e.ctrlKey){
+            e.preventDefault();
             ns.userInputEvent(e);
         }
     };

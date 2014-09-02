@@ -14,12 +14,17 @@ body {
   margin-top: 20px;
 }
 
+video {
+    background-color: black;
+}
+
 .typing-background {
     position: absolute;
     bottom: 0px;
     right: 0px;
-    max-width: 100%;
     width: 100%;
+    min-width: 100%;
+    min-height: 100%;
     z-index: -1000;
     overflow: hidden;
 }

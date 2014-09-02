@@ -28,6 +28,7 @@ window.onload = function(){
     $(document).on("keypress", fc.typing.events.keyPressEvent);
     $(document).on("keydown", fc.typing.events.controlWithKeys);
     playInfo.flag.loaded = true;
+    console.log("loaded");
     gameInfo.setProblemList();
     gameInfo.difficulty = gameInfo.evalDifficulty(gameInfo.problemData);
     fc.typing.graphics.renderGraphics();
