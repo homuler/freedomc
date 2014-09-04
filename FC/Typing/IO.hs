@@ -7,6 +7,7 @@ import Control.Monad
 import qualified Data.Text as T
 import qualified Data.Char as C
 import qualified FC.Data.Typing as FCDT
+import qualified FC.Data.Music as FCDM
 import qualified Data.ByteString.Lazy as B
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as E
@@ -72,3 +73,55 @@ getDirName str = do
 capitalize :: String -> String
 capitalize (x:xs) = C.toUpper x:xs
 capitalize x = x
+
+enumPackageList :: FilePath -> IO [FilePath]
+enumPackageList path = do
+  contents <- getDirectoryContents $ musicRootDirectory </> path
+  foldr (\x acc -> do
+            isDirectory <- doesDirectoryExist (musicRootDirectory </> path </> x)
+            putStrLn $ show isDirectory
+            putStrLn $ path </> x
+            paths <- if isDirectory
+                        then if x == "." || x == ".."
+                                then return []
+                                else enumPackageList (path </> x)
+                        else if isJson x
+                                then return [path </> x]
+                                else return []
+            (paths ++) <$> acc) (return []) contents
+    where isJson = endsWith ".json"
+          endsWith [] _ = True
+          endsWith _ [] = False
+          endsWith (x:xs) (y:ys) = case length xs `compare` length ys of
+                                      EQ ->  if x /= y then False
+                                                       else endsWith xs ys
+                                      LT -> endsWith (x:xs) ys
+                                      GT -> False
+
+getPackageContents :: FilePath -> IO (Maybe FilePath, Maybe FilePath, Maybe FilePath, Maybe FilePath)
+getPackageContents path = do
+  contents <- getDirectoryContents path
+  let videoExt = [".mp4", ".m4v"]
+      soundExt = [".mp3"]
+      pictExt = [".jpg", ".png"]
+      lyricExt = [".txt"]
+      configExt = [".json"]
+      videoFiles = filter (\x -> takeExtension x `elem` videoExt) contents
+      soundFiles = filter (\x -> takeExtension x `elem` soundExt) contents
+      pictFiles = filter (\x -> takeExtension x `elem` pictExt) contents
+      lyricFiles = filter (\x -> takeExtension x `elem` lyricExt) contents
+      configFiles = filter (\x -> takeExtension x `elem` configExt) contents
+      musicFilePath = case (videoFiles, soundFiles) of
+                          ([], []) -> Nothing
+                          ((x:xs), _) -> Just $ pathSeparator:path </> x
+                          ([], (y:ys)) -> Just $ pathSeparator:path </> y
+      pictFilePath = case pictFiles of
+                          [] -> Nothing
+                          (x:xs) -> Just $ pathSeparator:path </> x
+      lyricFilePath = case lyricFiles of
+                          [] -> Nothing
+                          (x:xs) -> Just $ path </> x
+      configFilePath = case configFiles of
+                          [] -> Nothing
+                          (x:xs) -> Just $ path </> x
+  return (musicFilePath, pictFilePath, lyricFilePath, configFilePath)

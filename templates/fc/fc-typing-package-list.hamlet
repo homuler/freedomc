@@ -1,0 +1,13 @@
+$if length packageList == 0
+  <p>No package to be installed found.
+$else
+  <table>
+    <tr>
+      <th>##
+      <th>Package Name
+      <th>Title
+    $forall (n, (package, title)) <- packageList
+      <tr>
+        <td>#{show n}
+        <td>#{package}
+        <td>#{title}

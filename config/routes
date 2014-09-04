@@ -19,3 +19,4 @@
 /freedomc/admin/update/#Text FCUpdateMusicR GET POST
 /freedomc/typing/result FCTypingResultR GET
 /freedomc/typing/search/record FCTypingShowRankingR GET
+/freedomc/typing/install FCInstallPackageR GET POST
