@@ -1,0 +1,41 @@
+window.onload = function(){
+    var postData;
+    var getOptions = {
+        type: "GET",
+        url: "@{FCInstallPackageR}",
+        dataType: "html",
+        success: function(d){
+            console.log(d);
+            $("#package-list").html(d);
+            console.log("success");
+            $("#get-package-list-btn").html("Refresh Package List");
+            $("#install-package-btn").removeClass("hidden");
+            var inputList = document.getElementsByName("package-list");
+            postData = [];
+            for(var i = 0; i < inputList.length; i++){
+                postData.push(inputList[i].value);
+            }
+            console.log(postData);
+        }
+    };
+    $("#get-package-list-btn").on("click", function(){
+        $.ajax(getOptions);
+    });
+
+    var postOptions = {
+        type: "POST",
+        url: "@{FCInstallPackageR}",
+        dataType: "html",
+        data: {
+                "package-list": postData,
+                test: "test"
+              },
+        success: function(d){
+            window.location.replace("@{FCTypingR}");
+        }
+    };
+    $("#install-package-btn").on("click", function(){
+        $.ajax(postOptions);
+    });
+    console.log($("#install-package-btn"));
+}

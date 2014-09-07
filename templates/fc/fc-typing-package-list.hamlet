@@ -1,13 +1,14 @@
 $if length packageList == 0
   <p>No package to be installed found.
 $else
-  <table>
+  <table .table>
     <tr>
       <th>##
       <th>Package Name
       <th>Title
-    $forall (n, (package, title)) <- packageList
+    $forall (n, (package, title, path)) <- packageList
       <tr>
-        <td>#{show n}
+        <td>
+          <input type=checkbox name=package-list value=#{path} checked>#{title}
         <td>#{package}
         <td>#{title}

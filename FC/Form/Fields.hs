@@ -29,3 +29,10 @@ multiCheckBoxList xs = Field
       v  -> case olReadExternal opts v of
         Nothing -> Left $ SomeMessage $ MsgInvalidEntry v
         Just x  -> Right $ Just x
+
+multiDynamicCheckBox :: Monad m => RenderMessage (HandlerSite m) FormMessage => Field m [Text]
+multiDynamicCheckBox = Field parse view UrlEncoded
+  where
+    parse [] _ = return $ Right Nothing
+    parse optlist _ = return $ Right $ Just optlist
+    view _ _ _ _ _ = [whamlet| |]

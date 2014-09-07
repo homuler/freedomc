@@ -1,5 +1,18 @@
-<form .form-horizontal role=form method=post action=@{FCMusicRegisterR} enctype=#{enctype}>
-  ^{widget}
-  <div .form-group .center-block>
-    <a .btn .btn-default href=@{FCTypingR} role=button>Back
-    <button type=submit .btn .btn-default>Upload Music File
+<ul .tabs>
+  <li>
+    <input type=radio name=tabs #register-tab1 checked />
+    <label .tab-label for=register-tab1>Register
+    <div #tab-content1 .tab-content>
+      <form .form-horizontal role=form method=post action=@{FCMusicRegisterR} enctype=#{enctype}>
+        ^{widget}
+        <div .form-group .center-block>
+          <a .btn .btn-default href=@{FCTypingR} role=button>Back
+          <button type=submit .btn .btn-default>Upload Music File
+
+  <li>
+    <input type=radio name=tabs #register-tab2 />
+    <label .tab-label for=register-tab2>Install
+    <div #tab-content2 .tab-content>
+      <div #package-list>
+      <button .btn .btn-default #get-package-list-btn>Get Package List
+      <button .btn .btn-default .hidden #install-package-btn>Install Selected Packages
