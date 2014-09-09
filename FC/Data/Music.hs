@@ -7,7 +7,7 @@ import Control.Monad
 data MusicFormat = Video | Sound
                  deriving (Eq, Read, Show, Enum, Bounded)
 
-data MusicGenre = Anime | Movie | Drama | OP | ED 
+data MusicGenre = Anime | Movie | Drama | Game | OP | ED
                                   deriving (Eq, Read, Show, Enum, Bounded)
 
 data MusicDifficulty = Easy | Normal | Hard | ExtraHard | Extreme | Lunatic
@@ -18,6 +18,7 @@ instance FromJSON MusicGenre where
     "Anime" -> return Anime
     "Movie" -> return Movie
     "Drama" -> return Drama
+    "Game" -> return Game
     "OP"    -> return OP
     "ED"    -> return ED
     _ -> mzero
