@@ -10,11 +10,15 @@ img {
     vertical-align: middle;
 }
 
-.typing-thumbnail:hover {
-    border: 3px #68A7B5 solid;
-    margin-bottom: 5px;
+.typing-thumbnail {
+    border-bottom: 3px;
+    padding: 5px;
 }
 
+.typing-thumbnail:hover {
+    border: 3px #68A7B5 solid;
+    margin: -3px;
+}
 .music-thumbnail {
     width: 100%;
     min-height: 250px;
