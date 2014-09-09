@@ -12,7 +12,9 @@ img {
 
 .typing-thumbnail:hover {
     border: 3px #68A7B5 solid;
+    margin-bottom: 5px;
 }
+
 .music-thumbnail {
     width: 100%;
     min-height: 250px;
