@@ -1,33 +1,34 @@
-<div .typing-thumbnail .col-md-4>
-  $with id <- fromId2Text mid
-    <div .form-group>
-      <form name=game-form-#{id} method=post action=@{FCTypingR}>
-        <input type=number name=game-id value=#{id} hidden>
-        <div .music-thumbnail data-id=#{id}>
-          $maybe pictPath <- fCMusicDataPicturePath musicData
-            <img src=#{pictPath} .thumbnail>
-          $nothing
-            <img src=@{StaticR img_default_thumbnail_png} .thumbnail>
-  <div .row>
-    <label .col-md-4 control-label>Title
-    <div .col-md-8>#{fCMusicDataTitle musicData}
-  <div .row>
-    <label .col-md-4 control-label>Musician
-    <div .col-md-8>#{fCMusicDataMusician musicData}
-  <div .row>
-    <label .col-md-4 control-label>Difficulty
-    $maybe tMDataEnt <- mTypingMusicData
-      $case tMDataEnt
-        $of (Entity _ typingMusicData)
-          <div .col-md-8>#{fCTypingMusicDataDifficulty typingMusicData}
-    $nothing
-      <div .col-md-8>Unknown
-  <div .row>
-    <label .col-md-4 control-label>Genre
-    $maybe musicGenre <- fCMusicDataGenre musicData
-      <div .col-md-8>
-        $forall genre <- musicGenre
-          <span .label .label-info>#{genre}
-    $nothing
-      <div .col-md-8>Nothing
+<div .col-md-4>
+  <div .typing-thumbnail>
+    $with id <- fromId2Text mid
+      <div .form-group>
+        <form name=game-form-#{id} method=post action=@{FCTypingR}>
+          <input type=number name=game-id value=#{id} hidden>
+          <div .music-thumbnail data-id=#{id}>
+            $maybe pictPath <- fCMusicDataPicturePath musicData
+              <img src=#{pictPath} .thumbnail>
+            $nothing
+              <img src=@{StaticR img_default_thumbnail_png} .thumbnail>
+    <div .row>
+      <label .col-md-4 control-label>Title
+      <div .col-md-8>#{fCMusicDataTitle musicData}
+    <div .row>
+      <label .col-md-4 control-label>Musician
+      <div .col-md-8>#{fCMusicDataMusician musicData}
+    <div .row>
+      <label .col-md-4 control-label>Difficulty
+      $maybe tMDataEnt <- mTypingMusicData
+        $case tMDataEnt
+          $of (Entity _ typingMusicData)
+            <div .col-md-8>#{fCTypingMusicDataDifficulty typingMusicData}
+      $nothing
+        <div .col-md-8>Unknown
+    <div .row>
+      <label .col-md-4 control-label>Genre
+      $maybe musicGenre <- fCMusicDataGenre musicData
+        <div .col-md-8>
+          $forall genre <- musicGenre
+            <span .label .label-info>#{genre}
+      $nothing
+        <div .col-md-8>Nothing
   <hr>
