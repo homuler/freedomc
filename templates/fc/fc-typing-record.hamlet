@@ -1,24 +1,22 @@
 <table .table>
   <tr>
-    <th>UserId
-    <th>MusicId
+    <th>Title
+    <th>User
     <th>ScoreSum
     <th>Correct
     <th>Miss
     <th>Speed
     <th>Solved
-    <th>Max Combo
     <th>Max Speed
-  $forall typingRecord <- typingRecords
-    $case typingRecord
-      $of (Entity _ record)
-        <tr>
-          <td>#{fromId2Text $ fCTypingRecordUserId record}
-          <td>#{fromId2Text $ fCTypingRecordMusicId record}
-          <td>#{show $ fCTypingRecordScoreSum record}
-          <td>#{show $ fCTypingRecordCorrect record}
-          <td>#{show $ fCTypingRecordMiss record}
-          <td>#{show $ fCTypingRecordSpeed record}
-          <td>#{show $ fCTypingRecordSolved record}
-          <td>#{show $ fCTypingRecordMaxCombo record}
-          <td>#{show $ fCTypingRecordMaxSpeed record}
+    <th>Max Combo
+  $forall record <- typingRecords
+    <tr>
+      <td>#{FCDB.musicTitle record}
+      <td>#{FCDB.userName record}
+      <td>#{show $ FCDB.score record}
+      <td>#{show $ FCDB.correct record}
+      <td>#{show $ FCDB.miss record}
+      <td>#{show $ FCDB.speed record}
+      <td>#{show $ FCDB.solved record}
+      <td>#{show $ FCDB.maxSpeed record}
+      <td>#{show $ FCDB.maxCombo record}

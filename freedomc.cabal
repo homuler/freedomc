@@ -25,6 +25,7 @@ library
                      FC.Field.Typing
                      FC.Data.Music
                      FC.Data.Typing
+                     FC.Data.Database
                      FC.Typing.IO
                      Handler.Home
                      Handler.FC.FCHome
@@ -42,6 +43,7 @@ library
                      Handler.FC.Typing.Result
                      Handler.FC.Typing.InstallPackage
                      Handler.FC.API.UserInfo
+                     Handler.FC.API.MusicData
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -92,6 +94,7 @@ library
                  , filepath                      >= 1.3        && < 1.4
                  , json                          >= 0.7        && < 0.8
                  , unix                          >= 2.6        && < 2.7
+                 , containers                    >= 0.5        && < 0.6
 
 executable         freedomc
     if flag(library-only)
