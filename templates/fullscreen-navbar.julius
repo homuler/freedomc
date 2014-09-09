@@ -1,0 +1,11 @@
+(function(){
+    console.log("onload");
+    $("#login-btn").on("click", function(){
+        console.log("button clicked");
+        window.location.href = "@{AuthR LoginR}"
+    });
+    $("#logout-btn").on("click", function(){
+        console.log("button clicked");
+        window.location.href = "@{AuthR LogoutR}"
+    });
+})();
