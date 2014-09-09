@@ -11,11 +11,10 @@ Email
     user UserId Maybe
     verkey Text Maybe
     UniqueEmail email
-FCTypingMusic
+FCMusicData
     title Text
     musician Text
     genre [Text] Maybe
-    difficulty Text Maybe
     format Text
     soundPath Text
     lyricPath Text
@@ -23,21 +22,23 @@ FCTypingMusic
     configPath Text
     UniqueConfig configPath
     deriving Show
-FCTypingRecord
-    musicId FCTypingMusicId
-    userId UserId
-    played Int
-    average Double
-    maxScore Double
-    UniqueTypingRecord musicId userId
+FCTypingMusicData
+    musicId FCMusicDataId
+    difficulty Text
+    typeNumber Int
+    problemNumber Int
+    UniqueMusic musicId
     deriving Show
-FCTypingMusicRecord
-    musicId FCTypingMusicId
+FCTypingRecord
+    musicId FCMusicDataId
     userId UserId
-    played Int
-    average Double
-    maxScore Double
-    UniqueMusicRecord musicId
+    scoreSum Double
+    correct Int
+    miss Int
+    speed Double
+    solved Int
+    maxSpeed Double
+    maxCombo Int
     deriving Show
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

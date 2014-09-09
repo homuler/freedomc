@@ -39,12 +39,11 @@
   transition: all 0.2s ease-in-out;
 }
 .tabs label.tab-label:hover {
-  background: #703688;
+  background: #524398;
 }
 .tabs .tab-content {
   z-index: 2;
   display: none;
-  overflow: hidden;
   width: 100%;
   font-size: 17px;
   line-height: 25px;
@@ -61,7 +60,9 @@
   display: block;
 }
 
-footer {
-   position: absolute;
-   bottom: 0%;
+#package-list {
+  max-height: 500px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
+

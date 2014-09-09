@@ -90,11 +90,10 @@ postFCMusicRegisterR = do
           case configData of
             Just _ -> do
               _ <- runDB $ insert $
-                   FCTypingMusic
+                   FCMusicData
                    (FCDM.title musicData)
                    (FCDM.musician musicData)
                    ((map $ T.pack . show) <$> FCDM.genre musicData)
-                   Nothing
                    (T.pack $ show mFormat)
                    mSoundSrc
                    mLyricSrc

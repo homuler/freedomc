@@ -1,41 +1,40 @@
 window.onload = function(){
-    var postData;
-    var getOptions = {
+    var postData, getOptions, postOptions {};
+    getOptions = {
         type: "GET",
         url: "@{FCInstallPackageR}",
         dataType: "html",
         success: function(d){
-            console.log(d);
             $("#package-list").html(d);
-            console.log("success");
             $("#get-package-list-btn").html("Refresh Package List");
             $("#install-package-btn").removeClass("hidden");
-            var inputList = document.getElementsByName("package-list");
-            postData = [];
-            for(var i = 0; i < inputList.length; i++){
-                postData.push(inputList[i].value);
-            }
-            console.log(postData);
         }
     };
     $("#get-package-list-btn").on("click", function(){
         $.ajax(getOptions);
     });
 
-    var postOptions = {
+    postOptions = {
         type: "POST",
         url: "@{FCInstallPackageR}",
-        dataType: "html",
-        data: {
-                "package-list": postData,
-                test: "test"
-              },
-        success: function(d){
+        dataType: "json",
+        beforeSend: function(){
+            console.log(this.data);
+        },
+        complete: function(){
             window.location.replace("@{FCTypingR}");
         }
     };
     $("#install-package-btn").on("click", function(){
+        var inputList = document.getElementsByName("package-list");
+        postData = [];
+        for(var i = 0; i < inputList.length; i++){
+            if(inputList[i].checked){
+                postData.push(inputList[i].value);
+            }
+        }
+        postOptions.data = { "package-list": postData };
         $.ajax(postOptions);
-    });
+    })
     console.log($("#install-package-btn"));
 }

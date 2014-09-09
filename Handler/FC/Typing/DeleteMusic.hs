@@ -4,6 +4,6 @@ import Import
 
 postFCDeleteMusicR :: Text -> Handler Html
 postFCDeleteMusicR numId = do
-  let deleteId = fromText2Id numId :: FCTypingMusicId
+  let deleteId = fromText2Id numId :: FCMusicDataId
   runDB $ delete deleteId
   redirect FCMusicListR

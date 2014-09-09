@@ -112,11 +112,10 @@ postFCMusicEditorR musicTitle = do
                deleteSession $ T.pack $ "endTime" ++ show i)
         $ zip ([1..] :: [Int]) $ FCDT.problems musicInfo
       _ <- runDB $ insert $
-        FCTypingMusic
+        FCMusicData
         (FCDT.title musicInfo)
         (FCDT.musician musicInfo)
         ((map $ T.pack . show) <$> FCDT.genre musicInfo)
-        Nothing
         (fromJust mFormat)
         (T.pack $ FCDT.musicSrc musicInfo)
         (T.pack $ FCDT.lyricSrc musicInfo)

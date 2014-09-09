@@ -79,8 +79,6 @@ enumPackageList path = do
   contents <- getDirectoryContents $ musicRootDirectory </> path
   foldr (\x acc -> do
             isDirectory <- doesDirectoryExist (musicRootDirectory </> path </> x)
-            putStrLn $ show isDirectory
-            putStrLn $ path </> x
             paths <- if isDirectory
                         then if x == "." || x == ".."
                                 then return []

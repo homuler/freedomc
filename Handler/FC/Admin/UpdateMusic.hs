@@ -11,18 +11,17 @@ import qualified FC.Form.Fields as FCField
 import qualified FC.Field.Typing as FCFT
 import qualified FC.Typing.IO as FCTI
 
-fcMusicUpdaterForm :: FCTypingMusic -> Html ->
+fcMusicUpdaterForm :: FCMusicData -> Html ->
                       MForm Handler (FormResult FCDT.MusicDataUpdated, Widget)
 fcMusicUpdaterForm musicData extra = do
-  let title = fCTypingMusicTitle musicData
-      musician = fCTypingMusicMusician musicData
-      mGenres  = fCTypingMusicGenre musicData
-      mDifficulty = fCTypingMusicDifficulty musicData
-      format = read . T.unpack $ fCTypingMusicFormat musicData
-      soundSrc = fCTypingMusicSoundPath musicData
-      lyricSrc = fCTypingMusicLyricPath musicData
-      mPictureSrc = fCTypingMusicPicturePath musicData
-      configSrc = fCTypingMusicConfigPath musicData
+  let title = fCMusicDataTitle musicData
+      musician = fCMusicDataMusician musicData
+      mGenres  = fCMusicDataGenre musicData
+      format = read . T.unpack $ fCMusicDataFormat musicData
+      soundSrc = fCMusicDataSoundPath musicData
+      lyricSrc = fCMusicDataLyricPath musicData
+      mPictureSrc = fCMusicDataPicturePath musicData
+      configSrc = fCMusicDataConfigPath musicData
   mMusicInfo <- liftIO $ FCTI.parseConfigFile $ T.unpack configSrc
   $logInfo $ T.pack $ show musicData
   case mMusicInfo of
@@ -101,13 +100,13 @@ getFCUpdateMusicR musicId = do
 postFCUpdateMusicR :: Text -> Handler Html
 postFCUpdateMusicR musicId = do
   mMusicData <- runDB $ get $ fromText2Id musicId
-  let temp = FCTypingMusic "" "" Nothing Nothing "Video" "" "" Nothing ""
+  let temp = FCMusicData "" "" Nothing "Video" "" "" Nothing ""
   case mMusicData of
     Just musicData -> do
       ((result, widget), enctype) <- runFormPost $ fcMusicUpdaterForm musicData
       case result of
         FormSuccess newMusicData -> do
-          let jsonPath = fCTypingMusicConfigPath musicData
+          let jsonPath = fCMusicDataConfigPath musicData
               packageDir = takeDirectory $ T.unpack jsonPath
           liftIO $ FCTI.saveConfigFile (FCDT.newMusicInfo newMusicData) $ T.unpack jsonPath
           newSoundPath <- liftIO $ case FCDT.newSoundData newMusicData of
@@ -122,10 +121,10 @@ postFCUpdateMusicR musicId = do
                         deleteSession $ T.pack $ "endTime" ++ show i)
                [1..(Import.length $ FCDT.problems $ FCDT.newMusicInfo newMusicData)]
           runDB $
-            updateWhere [FCTypingMusicId ==. fromText2Id musicId]
-                        [FCTypingMusicSoundPath =. T.pack newSoundPath,
-                         FCTypingMusicPicturePath =. T.pack <$> newPicturePath,
-                         FCTypingMusicGenre =.  map (T.pack . show) <$> (FCDT.genre $ FCDT.newMusicInfo newMusicData)]
+            updateWhere [FCMusicDataId ==. fromText2Id musicId]
+                        [FCMusicDataSoundPath =. T.pack newSoundPath,
+                         FCMusicDataPicturePath =. T.pack <$> newPicturePath,
+                         FCMusicDataGenre =.  map (T.pack . show) <$> (FCDT.genre $ FCDT.newMusicInfo newMusicData)]
           setMessage "Music Updated"
           redirect FCTypingR
         FormFailure text -> do

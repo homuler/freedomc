@@ -1,24 +1,24 @@
 $maybe musicData <- mMusicData
   <div #typing-game>
-    $if fCTypingMusicFormat musicData == "Video"
-      $maybe pictPath <- fCTypingMusicPicturePath musicData
+    $if fCMusicDataFormat musicData == "Video"
+      $maybe pictPath <- fCMusicDataPicturePath musicData
         <video #typing-sound .typing-background poster=#{pictPath}>
-          <source src=#{fCTypingMusicSoundPath musicData}>
+          <source src=#{fCMusicDataSoundPath musicData}>
       $nothing
         <video #typing-sound .typing-background>
-          <source src=#{fCTypingMusicSoundPath musicData}>
+          <source src=#{fCMusicDataSoundPath musicData}>
     $else
       <audio #typing-sound controls>
-        <source src=#{fCTypingMusicSoundPath musicData}>
-      $maybe pictPath <- fCTypingMusicPicturePath musicData
+        <source src=#{fCMusicDataSoundPath musicData}>
+      $maybe pictPath <- fCMusicDataPicturePath musicData
         <img .typing-background src=#{pictPath}>
       $nothing
         <img .typing-background src=@{StaticR img_default_thumbnail_png}>
     <div #game-display>
       <div .music-info>
         <div .main-info>
-          <div .title>#{fCTypingMusicTitle musicData}
-          <div .musician >#{fCTypingMusicMusician musicData}
+          <div .title>#{fCMusicDataTitle musicData}
+          <div .musician >#{fCMusicDataMusician musicData}
         <div .sub-info>
           <div .score-table>
             <table .table>

@@ -1,4 +1,4 @@
-module Handler.FCInstallPackage where
+module Handler.FC.Typing.InstallPackage where
 
 import Import
 import System.FilePath.Posix
@@ -16,7 +16,7 @@ getFCInstallPackageR = do
            $logInfo $ T.pack x) configPaths
   musicList <- runDB $ selectList [] []
   let registeredList =
-        map (\(Entity _ music) -> fCTypingMusicConfigPath music) musicList
+        map (\(Entity _ music) -> fCMusicDataConfigPath music) musicList
   packageList <- liftIO $ (zip [1..]) <$>
                    foldr (\x acc -> do
                              let pName = takeDirectory $ (splitPath x) !! 0
@@ -31,7 +31,7 @@ getFCInstallPackageR = do
   selectRep $ do
     provideRep $ return $(shamletFile "templates/fc/fc-typing-package-list.hamlet")
 
-postFCInstallPackageR :: Handler Html
+--postFCInstallPackageR :: Handler Html
 postFCInstallPackageR = do
   mPackageListInput <- runInputPost $ iopt FCField.multiDynamicCheckBox "package-list[]"
   case mPackageListInput of
@@ -54,17 +54,16 @@ postFCInstallPackageR = do
                              genre = FCDT.genre mi
                              format = FCDT.format mi
                          _ <- runDB $ insert $
-                              FCTypingMusic
+                              FCMusicData
                               (T.pack title)
                               (FCDT.musician mi)
                               ((map $ T.pack . show) <$> FCDT.genre mi)
-                              Nothing
                               format
                               (T.pack mp)
                               (T.pack lp)
                               (T.pack <$> mpp)
                               (T.pack cp)
-                         ((title ++ " is installed.\n"):) <$> acc
+                         ((title ++ " is installed."):) <$> acc
                        Nothing -> ((title ++ " can't be installed.\n"):) <$> acc
                    (_, _, _, Just cp) -> do
                      let title = takeBaseName cp
@@ -72,7 +71,7 @@ postFCInstallPackageR = do
                    _ -> error "config file not found.")
              (return []) packageList
       setMessage $ toHtml . T.pack $ concat msg
-      redirect FCTypingR
+      --redirect FCTypingR
     Nothing -> do
                setMessage "Invalid Post"
-               redirect FCInstallPackageR
+       --        redirect FCInstallPackageR

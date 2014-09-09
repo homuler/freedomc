@@ -13,13 +13,13 @@
     $forall (num, Entity id music) <- musicPairs
       <tr>
         <td>#{show num}
-        <td>#{fCTypingMusicTitle music}
-        <td>#{fCTypingMusicMusician music}
-        $maybe genreList <- fCTypingMusicGenre music
+        <td>#{fCMusicDataTitle music}
+        <td>#{fCMusicDataMusician music}
+        $maybe genreList <- fCMusicDataGenre music
           <td>
             $forall genre <- genreList
               #{genre}, #
-        <td>#{fCTypingMusicFormat music}
+        <td>#{fCMusicDataFormat music}
         <td>
           <div .form-group .col-md-3>
             <a .btn .btn-success href=@?{(FCTypingShowRankingR, [("musicid", fromId2Text id)])}>Record

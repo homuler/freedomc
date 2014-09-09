@@ -16,3 +16,4 @@
       <div #package-list>
       <button .btn .btn-default #get-package-list-btn>Get Package List
       <button .btn .btn-default .hidden #install-package-btn>Install Selected Packages
+      <a .btn .btn-primary href=@{FCTypingR}>Back

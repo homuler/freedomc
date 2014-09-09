@@ -6,12 +6,14 @@ import Text.Julius (rawJS)
 
 getFCTypingR :: Handler Html
 getFCTypingR = do
-  musicList <- runDB $ selectList [] [Asc FCTypingMusicTitle,
-                                      Asc FCTypingMusicMusician]
-               :: Handler [Entity FCTypingMusic]
-  let thumbnails= map
-                  (\(Entity musicId musicData) -> $(widgetFile "fc/fc-typing-thumbnail"))
-                  musicList
+  musicList <- runDB $ selectList [] [Asc FCMusicDataTitle,
+                                      Asc FCMusicDataMusician]
+               :: Handler [Entity FCMusicData]
+  thumbnails <- foldr (\(Entity mid musicData) acc -> do
+                          mTypingMusicData <- runDB $ getBy $ UniqueMusic mid
+                          acc' <- acc
+                          return ($(widgetFile "fc/fc-typing-thumbnail"):acc'))
+                (return []) musicList
   defaultLayout $ do
     setTitle "Freedom Concerto -Typing Game-"
     $(widgetFile "fc/fc-typing-home")

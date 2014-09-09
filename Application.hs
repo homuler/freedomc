@@ -40,7 +40,7 @@ import Handler.FC.Typing.TypingConfig
 import Handler.FC.Admin.UserList
 import Handler.FC.Admin.UpdateMusic
 import Handler.FC.Typing.Result
-import Handler.FCInstallPackage
+import Handler.FC.Typing.InstallPackage
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the

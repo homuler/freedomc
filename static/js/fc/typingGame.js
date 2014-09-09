@@ -989,7 +989,7 @@ fc.typing.events = fc.typing.events || {};
         getScoreSumRaw: function(){
             var scoresum = 0;
             for(x in ns.score){
-		console.log(x + " " + ns.score[x]);
+                console.log(x + " " + ns.score[x]);
                 scoresum += ns.score[x];
             }
             return scoresum;

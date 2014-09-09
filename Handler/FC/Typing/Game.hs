@@ -10,9 +10,9 @@ import Data.Maybe
 getFCTypingGameR :: Handler Html
 getFCTypingGameR = do
   mMusicId <- lookupSession "gameMusicId"
-  let musicId = fromJust $ fromText2Id <$> mMusicId :: FCTypingMusicId
+  let musicId = fromJust $ fromText2Id <$> mMusicId :: FCMusicDataId
   mMusicData <- runDB $ get musicId
-  configData <- liftIO $ readConfigFile . T.unpack . fCTypingMusicConfigPath $ fromJust mMusicData
+  configData <- liftIO $ readConfigFile . T.unpack . fCMusicDataConfigPath $ fromJust mMusicData
   fullscreenLayout $ do
     setTitle "FC -Typing Game-"
     addStylesheetRemote "http://fonts.googleapis.com/css?family=Poiret+One"
@@ -34,55 +34,32 @@ postFCTypingGameR = do
         Just uid -> uid
         Nothing  -> error "Unknown Player"
   let musicId = fromJust $ fromText2Id <$> mMusicId
-  score <- runInputPost $ ireq textField "score-sum-val"
+  scoreSum <- runInputPost $ ireq textField "score-sum-val"
+  correctNum <- runInputPost $ ireq intField "correct-val"
+  missNum <- runInputPost $ ireq intField "miss-val"
+  speed <- runInputPost $ ireq textField "speed-val"
+  solvedNum <- runInputPost $ ireq intField "solved-val"
+  maxSpeed <- runInputPost $ ireq textField "max-speed-val"
+  maxComboNum <- runInputPost $ ireq intField "max-combo-val"
+  typeNum <- runInputPost $ ireq intField "type-number-val"
+  problemNum <- runInputPost $ ireq intField "problem-number-val"
   difficulty <- runInputPost $ ireq textField "difficulty-val"
   _ <- runDB $ do
-      mMusicUserRecordEnt <- getBy $ UniqueTypingRecord musicId userId
-      $logInfo $ T.pack $ show mMusicUserRecordEnt
-      let mMusicUserRecord = case mMusicUserRecordEnt of
-                              Just (Entity _ record) -> Just record
-                              Nothing -> Nothing
-          userPlayed = fromMaybe 0 $ fCTypingRecordPlayed <$> mMusicUserRecord
-          userAvgScore = fromMaybe 0 $ fCTypingRecordAverage <$> mMusicUserRecord
-          userMaxScore = fromMaybe 0 $ fCTypingRecordMaxScore <$> mMusicUserRecord
-      let scoreNum = read $ T.unpack score
-          newUserMaxScore = max userMaxScore scoreNum
-          newUserPlayed = userPlayed + 1
-          newUserAvgScore = (userAvgScore*(fromIntegral userPlayed) + scoreNum) / (fromIntegral newUserPlayed)
-      case mMusicUserRecord of
+      let scoreSumNum = read $ T.unpack scoreSum
+          speedNum = read $ T.unpack speed
+          maxSpeedNum = read $ T.unpack maxSpeed
+      mMusicData <- getBy $ UniqueMusic musicId
+      case mMusicData of
         Just _ -> do
-          updateWhere [FCTypingRecordMusicId ==. musicId,
-                       FCTypingRecordUserId ==. userId]
-                      [FCTypingRecordPlayed =. newUserPlayed,
-                       FCTypingRecordAverage =. newUserAvgScore,
-                       FCTypingRecordMaxScore =. newUserMaxScore]
+          updateWhere [FCTypingMusicDataMusicId ==. musicId]
+                      [FCTypingMusicDataDifficulty =. difficulty,
+                       FCTypingMusicDataTypeNumber =. typeNum,
+                       FCTypingMusicDataProblemNumber =. problemNum]
         Nothing -> do
-          _ <- insert $ FCTypingRecord musicId userId newUserPlayed newUserAvgScore newUserMaxScore
+          _ <- insert $ FCTypingMusicData musicId difficulty typeNum problemNum
           return ()
 
-      mMusicRecordEnt <- getBy $ UniqueMusicRecord musicId
-      let mMusicRecord = case mMusicRecordEnt of
-                              Just (Entity _ record) -> Just record
-                              Nothing -> Nothing
-          musicPlayed = fromMaybe 0 $ fCTypingMusicRecordPlayed <$> mMusicRecord
-          musicAvgScore = fromMaybe 0 $ fCTypingMusicRecordAverage <$> mMusicRecord
-          musicMaxScore = fromMaybe 0 $ fCTypingMusicRecordMaxScore <$> mMusicRecord
-          newMusicAvgScore = (musicAvgScore*(fromIntegral musicPlayed) + scoreNum) / ((fromIntegral musicPlayed) + 1)
-      case mMusicRecord of
-        Just _ -> do
-          if musicMaxScore < scoreNum
-            then updateWhere [FCTypingMusicRecordMusicId ==. musicId]
-                             [FCTypingMusicRecordUserId =. userId,
-                              FCTypingMusicRecordPlayed +=. 1,
-                              FCTypingMusicRecordAverage =. newMusicAvgScore,
-                              FCTypingMusicRecordMaxScore =. scoreNum]
-            else updateWhere [FCTypingMusicRecordMusicId ==. musicId]
-                             [FCTypingMusicRecordPlayed +=. 1,
-                              FCTypingMusicRecordAverage =. newMusicAvgScore]
-        Nothing -> do
-          _ <- insert $ FCTypingMusicRecord musicId userId 1 scoreNum scoreNum
-          return ()
+      _ <- insert $ FCTypingRecord musicId userId scoreSumNum correctNum missNum speedNum solvedNum maxSpeedNum maxComboNum
+      return ()
   setMessage "Record Saved"
-  _ <- runDB $ do
-    update musicId [FCTypingMusicDifficulty =. Just difficulty]
   redirect FCTypingR

@@ -1,39 +1,24 @@
 <table .table>
   <tr>
-    <th>#
-    <th>Title
-    <th>Difficulty
-    <th>Played Time
-    <th>Average Score
-    <th>Highest Score
-    <th>Highest Player
-  $forall record <- records
-    $case record
-      $of (n, (mTR, mU, mTM))
+    <th>UserId
+    <th>MusicId
+    <th>ScoreSum
+    <th>Correct
+    <th>Miss
+    <th>Speed
+    <th>Solved
+    <th>Max Combo
+    <th>Max Speed
+  $forall typingRecord <- typingRecords
+    $case typingRecord
+      $of (Entity _ record)
         <tr>
-          <td>#{show n}
-
-          $maybe musicInfo <- mTM
-            <td>#{fCTypingMusicTitle musicInfo}
-            $maybe difficulty <- fCTypingMusicDifficulty musicInfo
-              <td>#{difficulty}
-            $nothing
-              <td>Unknown
-          $nothing
-            <td>Already Lost
-            <td>Unknown
-
-          $maybe typingRecord <- mTR
-            <td>#{show $ fCTypingRecordPlayed typingRecord}
-            <td>#{show $ fCTypingRecordAverage typingRecord}
-            <td>#{show $ fCTypingRecordMaxScore typingRecord}
-          $nothing
-            <td>Never Played
-            <td>Never Played
-            <td>Never Played
-
-          $maybe user <- mU
-            <td>#{userIdent user}
-          $nothing
-            <td>Unknown
-
+          <td>#{fromId2Text $ fCTypingRecordUserId record}
+          <td>#{fromId2Text $ fCTypingRecordMusicId record}
+          <td>#{show $ fCTypingRecordScoreSum record}
+          <td>#{show $ fCTypingRecordCorrect record}
+          <td>#{show $ fCTypingRecordMiss record}
+          <td>#{show $ fCTypingRecordSpeed record}
+          <td>#{show $ fCTypingRecordSolved record}
+          <td>#{show $ fCTypingRecordMaxCombo record}
+          <td>#{show $ fCTypingRecordMaxSpeed record}

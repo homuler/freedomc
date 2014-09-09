@@ -9,7 +9,7 @@ getFCTypingConfigR :: Text -> Handler Value
 getFCTypingConfigR idNum= do
   musicData <- runDB $ get $ fromText2Id idNum
   $logInfo $ T.pack $ show musicData
-  let path = T.unpack $ fCTypingMusicConfigPath $ fromJust musicData
+  let path = T.unpack $ fCMusicDataConfigPath $ fromJust musicData
 --  file <- liftIO $ B.readFile path
 --  $logInfo $ TL.toStrict $ E.decodeUtf8 file
 --  $logInfo $ fCTypingMusicConfigPath $ fromJust musicData
