@@ -1006,6 +1006,8 @@ fc.typing.events = fc.typing.events || {};
         if(ns.spec.totalTime == 0){
             return 0;
         }
+        console.log("get speed called");
+        console.log(ns.spec.correct * 60 / ns.spec.totalTime);
         return ns.spec.correct * 60 / ns.spec.totalTime;
     };
     ns.displayFinPage = function(){
@@ -1118,8 +1120,9 @@ fc.typing.events = fc.typing.events || {};
                 preCorrect = playInfo.spec.correct;
                 diffTime = 0;
             } else if(playInfo.flag.justFin){
+                playInfo.spec.totalTime += diffTime;
                 updateGraphics(diffTime, preCorrect);
-		playInfo.displayFinPage();
+                playInfo.displayFinPage();
                 return false;
             }
             events.status.called++;
@@ -1132,10 +1135,12 @@ fc.typing.events = fc.typing.events || {};
                         Math.round(fc.typing.nodes.typingSound.duration/2);
                 playInfo.score.maxSpeed = playInfo.scoreFuncs.getMaxSpeedBonus(playInfo.spec.maxSpeed);
                 playInfo.score.maxCombo = playInfo.scoreFuncs.getMaxComboBonus(playInfo.spec.maxCombo);
-                var deltaSpeed = diffTime == 0 ? 0 
-			: (playInfo.spec.correct - preCorrect)*60/diffTime;
+                var deltaSpeed = diffTime == 0 ? 0
+                    : (playInfo.spec.correct - preCorrect)*60/diffTime;
                 playInfo.spec.maxSpeed =
                     Math.max(playInfo.spec.maxSpeed, deltaSpeed);
+                console.log("max speed: " + (playInfo.spec.maxSpeed));
+                console.log("total time = " + (playInfo.spec.totalTime));
                 ns.updateSpeedGraph(deltaSpeed);
                 ns.updateScoreBar();
                 ns.updateTimeBar();

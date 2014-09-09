@@ -35,6 +35,6 @@
         <li>
           <a href="#user">#{userName}
         <li .navbar-form>
-          <button #loginBtn .btn .btn-primary>Sign in
+          <a .btn .btn-primary href=@{AuthR LoginR}>Sign in
         <li .navbar-form>
-          <button #logoutBtn .btn .btn-warning>Log Out
+          <a .btn .btn-warning href=@{AuthR LogoutR}>Log Out
