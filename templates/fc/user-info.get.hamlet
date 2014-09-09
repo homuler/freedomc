@@ -1,0 +1,10 @@
+$maybe userInfo <- mUserInfo
+  <table>
+    <tr>
+      <th>UserId
+      <th>User Name
+    <tr>
+      <td>#{uid}
+      <td>#{userIdent userInfo}
+$nothing
+  <p>No User Found: userid = #{uid}

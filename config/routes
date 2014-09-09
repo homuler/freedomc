@@ -20,3 +20,5 @@
 /freedomc/typing/result FCTypingResultR GET
 /freedomc/typing/search/record FCTypingShowRankingR GET
 /freedomc/typing/install FCInstallPackageR GET POST
+/freedomc/api/userinfo UserInfoAPIR GET POST
+/freedomc/api/musicdata MusicDataAPIR GET POST

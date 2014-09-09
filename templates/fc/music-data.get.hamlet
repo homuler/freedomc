@@ -1,0 +1,17 @@
+$maybe musicData <- mMusicData
+  <table>
+    <tr>
+      <th>MusicId
+      <th>Title
+      <th>Musician
+      <th>Genre
+    <tr>
+      <td>#{mid}
+      <td>#{fCMusicDataTitle musicData}
+      <td>#{fCMusicDataMusician musicData}
+      <td>
+        $maybe genres <- fCMusicDataGenre musicData
+          $forall genre <- genres
+            #{genre},
+$nothing
+  <p>No Music Data is not Found: musicid = #{mid}
