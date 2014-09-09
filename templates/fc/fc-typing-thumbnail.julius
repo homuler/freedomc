@@ -3,10 +3,10 @@ fc.thumbnail = fc.thumbnail || {};
 
 (function(ns){
     ns.musicSrc = ns.musicSrc || {};
-    ns.musicSrc["#{rawJS $ fromId2Text musicId}"] =
+    ns.musicSrc["#{rawJS $ fromId2Text mid}"] =
         {
-            path: "#{rawJS $ fCTypingMusicSoundPath musicData}",
-            format: "#{rawJS $ fCTypingMusicFormat musicData}"
+            path: "#{rawJS $ fCMusicDataSoundPath musicData}",
+            format: "#{rawJS $ fCMusicDataFormat musicData}"
         };
     console.log(ns.musicSrc);
 })(fc.thumbnail = fc.thumbnail || {});

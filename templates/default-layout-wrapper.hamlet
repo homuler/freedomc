@@ -16,7 +16,6 @@ $newline never
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link href=@{StaticR css_bootstrap_min_css} rel="stylesheet">
         <link href=@{StaticR css_navbar_fixed_top_css} rel="stylesheet">
-        <link href=@{StaticR css_default_layout_css} rel="stylesheet">
 
         ^{pageHead pc}
 
@@ -35,8 +34,8 @@ $newline never
             <header>
             <div id="main" role="main">
               ^{pageBody pc}
-            <footer>
-                #{extraCopyright $ appExtra $ settings master}
+            <!--<footer>
+                #{extraCopyright $ appExtra $ settings master}-->
 
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>

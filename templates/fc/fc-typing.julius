@@ -6,9 +6,18 @@ fc.typing.events = fc.typing.events || {};
 fc.typing.events.postRecord = function(){
     var playInfo = fc.typing.status.playInfo,
         gameInfo = fc.typing.status.gameInfo,
+        util = fc.typing.util,
         postBtn = this;
     $('<form/>', { action: '@{FCTypingGameR}', method: 'post'})
-    .append($('<input/>', {type: 'hidden', name: 'score-sum-val', value: playInfo.scoreFuncs.getScoreSum()}))
+    .append($('<input/>', {type: 'hidden', name: 'score-sum-val', value: util.roundN(playInfo.scoreFuncs.getScoreSum(), 5)}))
+    .append($('<input/>', {type: 'hidden', name: 'correct-val', value: playInfo.spec.correct}))
+    .append($('<input/>', {type: 'hidden', name: 'miss-val', value: playInfo.spec.miss}))
+    .append($('<input/>', {type: 'hidden', name: 'speed-val', value: util.roundN(playInfo.getSpeed(), 2)}))
+    .append($('<input/>', {type: 'hidden', name: 'solved-val', value: playInfo.spec.solved}))
+    .append($('<input/>', {type: 'hidden', name: 'max-speed-val', value: util.roundN(playInfo.spec.maxSpeed, 2)}))
+    .append($('<input/>', {type: 'hidden', name: 'max-combo-val', value: playInfo.spec.maxCombo}))
+    .append($('<input/>', {type: 'hidden', name: 'type-number-val', value: gameInfo.maxType}))
+    .append($('<input/>', {type: 'hidden', name: 'problem-number-val', value: gameInfo.problemData.length}))
     .append($('<input/>', {type: 'hidden', name: 'difficulty-val', value: fc.typing.constants.difficulties[gameInfo.difficulty]}))
     .appendTo(document.body)
     .submit();

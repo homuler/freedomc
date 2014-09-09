@@ -10,6 +10,9 @@ img {
     vertical-align: middle;
 }
 
+.typing-thumbnail:hover {
+    border: 3px #68A7B5 solid;
+}
 .music-thumbnail {
     width: 100%;
     min-height: 250px;

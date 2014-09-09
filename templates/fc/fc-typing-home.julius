@@ -87,14 +87,32 @@ fc.thumbnail = fc.thumbnail || {};
                     var $playInfoNode = $("<div>");
                         $headerNode = $("<p>");
                         $tableNode = $("<table>");
+                    console.log(data);
 
+                    var recordDefault = { played : 0,
+                                          highest : 0.0,
+                                          average : 0.0 };
+                    var record = {};
+                    if( data.records.length > 0 ){
+                        console.log(data.records);
+                        record.played = data.records.length;
+                        var maxScore = 0.0, sum = 0.0;
+                        for(var i = 0; i < data.records.length; i++){
+                            maxScore = Math.max(maxScore, data.records[i].score);
+                            sum += data.records[i].score;
+                        }
+                        record.highest = maxScore;
+                        record.average = sum / record.played;
+                    } else {
+                        record = recordDefault;
+                    }
                     $playInfoNode.attr("class", "play-info");
                     $headerNode.attr("class", "title");
                     $tableNode.attr("class", "table");
                     $headerNode.html("Your Play Data");
-                    $tableNode.append(tableRow("Played", data.played));
-                    $tableNode.append(tableRow("Highest", data.highest));
-                    $tableNode.append(tableRow("Average", data.average));
+                    $tableNode.append(tableRow("Played", record.played));
+                    $tableNode.append(tableRow("Highest", record.highest));
+                    $tableNode.append(tableRow("Average", record.average));
                     $playInfoNode.append($headerNode);
                     $playInfoNode.append($tableNode);
                     $musicContainer.append($playInfoNode);
