@@ -1,7 +1,7 @@
 freedomc
 ======
 
-Freedom Concerto -Web Application written with Yesod Framework  
+Freedom Concerto -Typing Game written with Yesod Framework  
 
 -- - - -
 ## Requirements
