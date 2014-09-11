@@ -1,0 +1,18 @@
+$maybe musicDataEnt <- mTypingMusicData
+  $case musicDataEnt
+    $of (Entity _ musicData)
+      <table>
+        <tr>
+          <th>Music Id
+          <td>#{mid}
+        <tr>
+          <th>Difficulty
+          <td>#{fCTypingMusicDataDifficulty musicData}
+        <tr>
+          <th>Max Type
+          <td>#{show $ fCTypingMusicDataTypeNumber musicData}
+        <tr>
+          <th>Problem Number
+          <td>#{show $ fCTypingMusicDataProblemNumber musicData}
+$nothing
+  <p>Never Played
