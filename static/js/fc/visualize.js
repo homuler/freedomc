@@ -581,7 +581,7 @@ fc.util = fc.util || {};
             return radar;
         },
         draw: function(id, d, options) {
-            var chart = RadarChart.chart().config(options);
+            var chart = ns.RadarChart.chart().config(options);
             var cfg = chart.config();
 
             d3.select(id).select('svg').remove();
