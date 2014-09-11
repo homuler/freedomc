@@ -1,24 +1,53 @@
+var fc = fc || {};
+fc.ajax = fc.ajax || {};
+
 window.onload = (function(){
-    var ajaxFin = false;
+    var ajaxRecordFin = false,
+        ajaxMusicFin = false,
+        ajaxTypingMusicFin = false;
+    var musicDataContainer = {},
+        recordContainer = {},
+        typingDataContainer = {};
     return function(){
-        var option = {
-            type: "GET",
-            url: "@{FCTypingResultR}",
-            dataType: "html",
-            data: {
-                "user": #{rawJS userValue},
-                "musicid": #{rawJS musicidValue}
-            },
-            success: function(data) {
-                $("#ranking-panel").append(data);
-                ajaxFin = true;
-            },
-            error: function() {
-                console.log("problem occured during ajax request.");
-            }
+        var recordReqData = {
+            "user": #{rawJS userValue},
+            "musicid" : #{rawJS musicidValue}
         };
-        if(!ajaxFin){
-            $.ajax(option);
+        var musicReqData = {
+            "musicid": #{rawJS musicidValue}
+        };
+        if(!ajaxRecordFin){
+            fc.ajax.getTypingResult(recordReqData, recordSuccess, error, recordContainer);
         }
+        if(!ajaxMusicFin){
+            fc.ajax.getMusicData(musicReqData, musicDataSuccess, error, musicDataContainer);
+        }
+    };
+    function recordSuccess(data){
+        recordContainer = data;
+        if(data.records.length > 0){
+            fc.viz.renderUserLineGraph(data.records);
+        }
+        ajaxRecordFin = true;
+    };
+    function musicDataSuccess(musicData){
+        musicDataContainer = musicData;
+        var musicReqData = {
+            "musicid": #{rawJS musicidValue}
+        };
+        fc.ajax.getTypingMusicData(musicReqData, typingMusicDataSuccess, error, typingDataContainer);
+        ajaxMusicFin  = true;
+        function typingMusicDataSuccess(data){
+            typingDataContainer = data;
+            fc.viz.renderMusicData("@{StaticR html_music_table_html}", data, musicData);
+            $(".graph-filter").on("change", function(){
+                fc.viz.renderRecordDetails(recordContainer.records, typingDataContainer);
+            });
+            fc.viz.renderRecordDetails(recordContainer.records, typingDataContainer);
+            ajaxTypingMusicFin = true;
+        };
+    };
+    function error(){
+        console.log("ajax requst failed.");
     };
 })();

@@ -15,11 +15,20 @@ import FC.Persistent
 share [mkPersist sqlOnlySettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
+instance ToJSON User where
+  toJSON (User name _) = object ["name" .= name]
+
 instance ToJSON FCTypingRecord where
   toJSON
     (FCTypingRecord mid uid score correct miss speed solved maxSpeed maxCombo) =
     object ["musicId" .= (fromId2Text mid), "userId" .= (fromId2Text uid),
             "score" .= score, "correct" .= correct,
             "miss" .= miss, "speed" .= speed,
-            "solved" .= solved, "max-spped" .= maxSpeed,
+            "solved" .= solved, "max-speed" .= maxSpeed,
             "max-combo" .= maxCombo]
+
+instance ToJSON FCTypingMusicData where
+  toJSON
+    (FCTypingMusicData mid diff typeNum probNum) =
+    object ["musicId" .= (fromId2Text mid), "difficulty" .= diff,
+            "max-type" .= typeNum, "problem-number" .= probNum]

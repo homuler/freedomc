@@ -28,6 +28,6 @@
           <div .form-group .col-md-3>
             <form method=post action=@{FCDeleteMusicR $ fromId2Text id}>
               <input type=hidden name=_method value=delete>
-              <button type=submit .btn .btn-danger>Delete
+              <button .delete-btn .btn .btn-danger>Delete
 <div .row>
   <a .btn .btn-primary href=@{FCTypingR} role=button>Back

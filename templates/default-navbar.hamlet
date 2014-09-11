@@ -19,6 +19,6 @@
         <li>
           <a href="#user">#{userName}
         <li .navbar-form>
-          <button #loginBtn .btn .btn-primary>Sign in
+          <button #login-btn .btn .btn-primary>Sign in
         <li .navbar-form>
-          <button #logoutBtn .btn .btn-warning>Log Out
+          <button #logout-btn .btn .btn-warning>Log Out

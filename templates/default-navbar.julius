@@ -1,12 +1,11 @@
-window.onload = function(){
-  document.getElementById("loginBtn").onclick = 
-    function(){
-      location.href = "@{AuthR LoginR}"
-    }
-  document.getElementById("logoutBtn").onclick = 
-    function(){
-      location.href = "@{AuthR LogoutR}"
-    }
-}
-
-
+(function(){
+    console.log("onload");
+    $("#login-btn").on("click", function(){
+        console.log("button clicked");
+        window.location.href = "@{AuthR LoginR}"
+    });
+    $("#logout-btn").on("click", function(){
+        console.log("button clicked");
+        window.location.href = "@{AuthR LogoutR}"
+    });
+})();

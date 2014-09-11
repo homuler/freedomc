@@ -1,0 +1,10 @@
+window.onload = function(){
+    console.log("onload");
+    $(".delete-btn").on("click", function(e){
+        console.log("onclick");
+        //e.preventDefault();
+        if(!window.confirm("This Operation can't be recovered.\nAre you OK?")){
+            e.preventDefault();
+        }
+    })
+};

@@ -24,12 +24,14 @@ getFCTypingResultR = do
         (Nothing, Just mid) -> [ FCTypingRecordMusicId ==. mid ]
         (Nothing, Nothing) -> []
   typingRecords' <- runDB $ selectList options [ Asc FCTypingRecordUserId,
-                                                Asc FCTypingRecordUserId,
-                                                Desc FCTypingRecordScoreSum]
+                                                 Asc FCTypingRecordMusicId,
+                                                 Desc FCTypingRecordId]
   usersMap <- FCDB.getDataMap :: Handler (Map.Map Text User)
   musicDataMap <- FCDB.getDataMap :: Handler (Map.Map Text FCMusicData)
-  let typingRecords = map (\(Entity _ x) -> FCDB.fromFCTR2FCTRC usersMap musicDataMap x) typingRecords'
+  typingMusicDataMap <- FCDB.getDataMapWithKey fCTypingMusicDataMusicId
+  let typingRecords = map (\(Entity _ x) -> FCDB.fromFCTR2FCTRC usersMap musicDataMap typingMusicDataMap x) typingRecords'
   $logInfo $ T.pack $ show typingRecords
+  $logInfo $ T.pack $ show typingRecords'
   selectRep $ do
     provideRep $ return $(shamletFile "templates/fc/fc-typing-record.hamlet")
     provideRep $ return $ object ["records" .= typingRecords]
@@ -40,4 +42,6 @@ getFCTypingShowRankingR = do
   musicId <- lookupGetParam "musicid"
   let userValue = fromMaybe "false" userOnly
       musicidValue = fromMaybe "0" musicId
-  defaultLayout $(widgetFile "fc/fc-typing-ranking")
+  defaultLayout $ do
+    addScript $ StaticR js_fc_visualize_js
+    $(widgetFile "fc/fc-typing-ranking")
