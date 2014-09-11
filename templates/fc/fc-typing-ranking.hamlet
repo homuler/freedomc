@@ -3,10 +3,10 @@
     <div .panel-heading>Music Data
   <div #record-details .col-md-offset-1 .col-md-5>
     <div .graph-filters>
-      <input .graph-filter type=checkbox checked value=1>Max Data
-      <input .graph-filter type=checkbox checked value=2>Average Data
+      <input .graph-filter type=checkbox value=1>Max Data
+      <input .graph-filter type=checkbox value=2>Average Data
       <input .graph-filter type=checkbox checked value=3>User Data
   <svg .col-md-12 #user-graph>
-<div .btn-group>
+<div #btn-group .col-md-12>
   <a .btn .btn-primary href=@{FCMusicListR}>Back
   <a .btn .btn-default href=@{FCTypingR}>Home
