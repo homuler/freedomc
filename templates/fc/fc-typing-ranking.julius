@@ -5,7 +5,9 @@ window.onload = (function(){
     var ajaxRecordFin = false,
         ajaxMusicFin = false,
         ajaxTypingMusicFin = false;
-    var musicDataContainer = {};
+    var musicDataContainer = {},
+        recordContainer = {},
+        typingDataContainer = {};
     return function(){
         var recordReqData = {
             "user": #{rawJS userValue},
@@ -15,26 +17,33 @@ window.onload = (function(){
             "musicid": #{rawJS musicidValue}
         };
         if(!ajaxRecordFin){
-            fc.ajax.getTypingResult(recordReqData, recordSuccess, error);
+            fc.ajax.getTypingResult(recordReqData, recordSuccess, error, recordContainer);
         }
         if(!ajaxMusicFin){
             fc.ajax.getMusicData(musicReqData, musicDataSuccess, error, musicDataContainer);
         }
     };
     function recordSuccess(data){
+        recordContainer = data;
         if(data.records.length > 0){
             fc.viz.renderUserLineGraph(data.records);
         }
         ajaxRecordFin = true;
     };
     function musicDataSuccess(musicData){
+        musicDataContainer = musicData;
         var musicReqData = {
             "musicid": #{rawJS musicidValue}
         };
-        fc.ajax.getTypingMusicData(musicReqData, typingMusicDataSuccess, error);
+        fc.ajax.getTypingMusicData(musicReqData, typingMusicDataSuccess, error, typingDataContainer);
         ajaxMusicFin  = true;
         function typingMusicDataSuccess(data){
+            typingDataContainer = data;
             fc.viz.renderMusicData("@{StaticR html_music_table_html}", data, musicData);
+            $(".graph-filter").on("change", function(){
+                fc.viz.renderRecordDetails(recordContainer.records, typingDataContainer);
+            });
+            fc.viz.renderRecordDetails(recordContainer.records, typingDataContainer);
             ajaxTypingMusicFin = true;
         };
     };

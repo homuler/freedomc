@@ -1,11 +1,12 @@
-<div>
-  <div>Search
-    <select>Filter1
-    <select>Filter2
 <div #music-record>
-  <div .panel .panel-primary #music-data-table>
+  <div .col-md-6 .panel .panel-primary #music-data-table>
     <div .panel-heading>Music Data
-    <div .panel-body>
-  <svg #user-graph>
-<a .btn .btn-primary href=@{FCMusicListR}>Back
-<a .btn .btn-default href=@{FCTypingR}>Home
+  <div #record-details .col-md-offset-1 .col-md-5>
+    <div .graph-filters>
+      <input .graph-filter type=checkbox checked value=1>Max Data
+      <input .graph-filter type=checkbox checked value=2>Average Data
+      <input .graph-filter type=checkbox checked value=3>User Data
+  <svg .col-md-12 #user-graph>
+<div .btn-group>
+  <a .btn .btn-primary href=@{FCMusicListR}>Back
+  <a .btn .btn-default href=@{FCTypingR}>Home

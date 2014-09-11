@@ -32,7 +32,7 @@ instance ToJSON FCTypingRecordCombined where
     object ["user" .= userInfo, "musicTitle" .= mname,
             "score" .= sc, "correct" .= cr,
             "miss" .= mi, "speed" .= sp,
-            "solved" .= sl, "max-spped" .= mxs,
+            "solved" .= sl, "max-speed" .= mxs,
             "max-combo" .= mxc, "typingData" .= tmdata]
 
 fromFCTR2FCTRC :: (Map.Map Text User) -> (Map.Map Text FCMusicData) -> (Map.Map Text FCTypingMusicData) -> FCTypingRecord -> FCTypingRecordCombined

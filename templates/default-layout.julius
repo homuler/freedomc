@@ -11,7 +11,9 @@ fc.ajax = fc.ajax || {};
             success: function(data){
                 console.log(data);
                 if(container){
+                    console.log("container " + container);
                     container = data;
+                    console.log(container);
                 }
                 success(data);
             },

@@ -24,3 +24,8 @@
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
 }
+
+#music-data-table {
+    margin-top: 60px;
+    padding: 0px;
+}

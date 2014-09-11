@@ -16,6 +16,7 @@ $newline never
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link href=@{StaticR css_bootstrap_min_css} rel="stylesheet">
         <link href=@{StaticR css_bootstrap_multiselect_css} rel="stylesheet">
+        <link href=@{StaticR css_radar_chart_min_css} rel="stylesheet">
 
         ^{pageHead pc}
 

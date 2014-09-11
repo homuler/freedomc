@@ -24,7 +24,7 @@ instance ToJSON FCTypingRecord where
     object ["musicId" .= (fromId2Text mid), "userId" .= (fromId2Text uid),
             "score" .= score, "correct" .= correct,
             "miss" .= miss, "speed" .= speed,
-            "solved" .= solved, "max-spped" .= maxSpeed,
+            "solved" .= solved, "max-speed" .= maxSpeed,
             "max-combo" .= maxCombo]
 
 instance ToJSON FCTypingMusicData where
