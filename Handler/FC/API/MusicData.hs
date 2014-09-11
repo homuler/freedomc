@@ -23,7 +23,7 @@ getMusicDataAPIR = do
     Nothing -> do
       selectRep $ do
         provideRep $ return [shamlet| <p>musicid is required.|]
-        provideRep $ return $ object ["error" .= (T.pack "music is required.")]
+        provideRep $ return $ object ["error" .= (T.pack "Parameter is required: musicid")]
 
 postMusicDataAPIR :: Handler Html
 postMusicDataAPIR = error "Not yet implemented: postMusicDataAPIR"
