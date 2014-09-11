@@ -2,7 +2,10 @@
   <div>Search
     <select>Filter1
     <select>Filter2
-<div #ranking-panel .panel .panel-primary>
-  <div .panel-heading>Typing Score Data
+<div #music-record>
+  <div .panel .panel-primary #music-data-table>
+    <div .panel-heading>Music Data
+    <div .panel-body>
+  <svg #user-graph>
 <a .btn .btn-primary href=@{FCMusicListR}>Back
 <a .btn .btn-default href=@{FCTypingR}>Home

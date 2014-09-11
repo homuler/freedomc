@@ -17,8 +17,8 @@ getTypingMusicDataAPIR = do
             Just (Entity _ musicData) ->
               object ["musicId" .= mid,
                       "difficulty" .= (fCTypingMusicDataDifficulty musicData),
-                      "typeNumber" .= (fCTypingMusicDataTypeNumber musicData),
-                      "problemNumber" .= (fCTypingMusicDataProblemNumber musicData)]
+                      "max-type" .= (fCTypingMusicDataTypeNumber musicData),
+                      "problem-number" .= (fCTypingMusicDataProblemNumber musicData)]
             Nothing -> object ["error" .= (T.append "Music Data is not Found: musicid = " mid)]
     Nothing -> do
       selectRep $ do

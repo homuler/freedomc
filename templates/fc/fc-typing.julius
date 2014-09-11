@@ -18,7 +18,7 @@ fc.typing.events.postRecord = function(){
     .append($('<input/>', {type: 'hidden', name: 'max-combo-val', value: playInfo.spec.maxCombo}))
     .append($('<input/>', {type: 'hidden', name: 'type-number-val', value: gameInfo.maxType}))
     .append($('<input/>', {type: 'hidden', name: 'problem-number-val', value: gameInfo.problemData.length}))
-    .append($('<input/>', {type: 'hidden', name: 'difficulty-val', value: fc.typing.constants.difficulties[gameInfo.difficulty]}))
+    .append($('<input/>', {type: 'hidden', name: 'difficulty-val', value: fc.data.difficulties[gameInfo.difficulty]}))
     .appendTo(document.body)
     .submit();
 };

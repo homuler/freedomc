@@ -1,0 +1,37 @@
+var fc = fc || {};
+fc.ajax = fc.ajax || {};
+
+(function(ns){
+    ns.ajaxRequest = function(type, url, data, success, error, container){
+        var option = {
+            type: type,
+            url: url,
+            dataType: "json",
+            data: data,
+            success: function(data){
+                console.log(data);
+                if(container){
+                    container = data;
+                }
+                success(data);
+            },
+            error: error
+        };
+        $.ajax(option);
+    };
+    ns.ajaxGetRequest = function(url, data, success, error, container){
+        ns.ajaxRequest("GET", url, data, success, error, container);
+    };
+    ns.getTypingResult = function(data, success, error, container){
+        ns.ajaxGetRequest("@{FCTypingResultR}", data, success, error, container);
+    }
+    ns.getMusicData = function(data, success, error, container){
+        ns.ajaxGetRequest("@{MusicDataAPIR}", data, success, error, container);
+    }
+    ns.getTypingMusicData = function(data, success, error, container){
+        ns.ajaxGetRequest("@{TypingMusicDataAPIR}", data, success, error, container);
+    }
+    ns.getUserInfo = function(data, success, error, container){
+        ns.ajaxGetRequest("@{UserInfoAPIR}", data, success, error, container);
+    }
+})(fc.ajax = fc.ajax || {})

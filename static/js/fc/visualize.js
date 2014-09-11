@@ -7,31 +7,27 @@ fc.util = fc.util || {};
         return d3.nest()
             .key(function(el){ return el.user.name; }).entries(data);
     };
-    ns.renderMusicData = function(html, data, idx){
-        console.log(data);
-        console.log(idx);
-        var tableData = idx >= 0 ? [
-            data.records[idx].musicTitle,
-            data.records[idx].typingData.difficulty,
-            fc.data.maxScoresMap[data.records[idx].typingData.difficulty],
-            data.records[idx].typingData["max-type"],
-            data.records[idx].typingData["problem-number"]
-        ] : [];
-        if(tableData.length > 0){
-            d3.text(html, function(d){
-                d3.select("#music-data-table")
-                  .append("div")
-                  .attr("class", "panel-body")
-                  .html(d);
-                d3.selectAll("#music-data-table .music-data")
-                  .data(tableData).html(function(p){ return p});
-            });
+    ns.renderMusicData = function(html, typingData, musicData){
+        var tableData = [musicData.title];
+        if(typingData && typingData.difficulty){
+            tableData.push(typingData.difficulty);
+            tableData.push(fc.data.maxScoresMap[typingData.difficulty]);
+            tableData.push(typingData["max-type"]);
+            tableData.push(typingData["problem-number"]);
         } else {
+            tableData.push("Unknown");
+            tableData.push("Unknown");
+            tableData.push("Unknown");
+            tableData.push("Unknown");
+        }
+        d3.text(html, function(d){
             d3.select("#music-data-table")
               .append("div")
               .attr("class", "panel-body")
-              .html("<p>Never Played</p>");
-        }
+              .html(d);
+            d3.selectAll("#music-data-table .music-data")
+              .data(tableData).html(function(p){ return p});
+        });
     };
     ns.renderUserLineGraph = function(data){
         var users = d3.nest()
@@ -75,8 +71,8 @@ fc.util = fc.util || {};
                       .orient("left");
         var line = d3.svg.line()
                      .interpolate("linear")
-                     .x(function(d, i) { console.log("dx = " + x(i)); return x(i+1); })
-                     .y(function(d) { console.log(y(d.score)); return y(d.score); });
+                     .x(function(d, i) { return x(i+1); })
+                     .y(function(d) { return y(d.score); });
         var svg = d3.select("#user-graph")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
@@ -146,7 +142,7 @@ fc.util = fc.util || {};
            .append("g")
            .attr("class", "userdatapoint")
            .append("circle")
-           .attr("r", 3)
+           .attr("r", 5)
            .attr("cx", function(d){ return x(d.index); })
            .attr("cy", function(d){ return y(d.score); })
            .style("stroke", function(d) { return color(d.user.name); })
