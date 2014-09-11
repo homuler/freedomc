@@ -27,6 +27,7 @@ $newline never
         <script src=@{StaticR js_bootstrap_min_js}>
         <script src=@{StaticR js_jquery_bootstrap_autohidingnavbar_min_js}>
         <script src=@{StaticR js_bootstrap_multiselect_js}>
+        <script src=@{StaticR js_fc_typingData_js}>
         <script src=@{StaticR js_d3_min_js}>
         <script src=@{StaticR js_Chart_min_js}>
         <script>

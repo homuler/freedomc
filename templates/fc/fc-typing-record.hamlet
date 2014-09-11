@@ -11,8 +11,16 @@
     <th>Max Combo
   $forall record <- typingRecords
     <tr>
-      <td>#{FCDB.musicTitle record}
-      <td>#{FCDB.userName record}
+      <td>
+        $maybe title <- FCDB.musicTitle record
+          #{title}
+        $nothing
+          Unknown
+      <td>
+        $maybe userInfo <- FCDB.user record
+          #{userIdent userInfo}
+        $nothing
+          Unknown
       <td>#{show $ FCDB.score record}
       <td>#{show $ FCDB.correct record}
       <td>#{show $ FCDB.miss record}
