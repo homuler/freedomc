@@ -87,6 +87,7 @@ fc.typing.events = fc.typing.events || {};
             }
         },
         graphicID: {
+            timeBar: "time-bar",
             speedGauge: "container-speed",
             speedGraph: "speed-graph",
             scoreGraph: "score-graph",
@@ -853,7 +854,7 @@ fc.typing.events = fc.typing.events || {};
             }
             resetCurrentProblem(ns.problemID);
             var nextStartTime = parseFloat(gameInfo.problemData[ns.problemID].startTime);
-            if(nextStartTime <= currentTime){
+            if(nextStartTime > currentTime){
                 unfocusProblems();
             }
         }
@@ -976,7 +977,6 @@ fc.typing.events = fc.typing.events || {};
         getScoreSumRaw: function(){
             var scoresum = 0;
             for(x in ns.score){
-                console.log(x + " " + ns.score[x]);
                 scoresum += ns.score[x];
             }
             return scoresum;
@@ -1034,8 +1034,12 @@ fc.typing.events = fc.typing.events || {};
 
 (function(ns){
     var playInfo = fc.typing.status.playInfo,
-        graphicID = fc.typing.constants.graphicID;
+        graphicID = fc.typing.constants.graphicID,
+        htmlID = fc.typing.constants.htmlID;
     ns.options = {
+        timeBar: {
+            color: "#9966ff"
+        },
         speedGauge: { size: 200,
                       clipWidth: 200,
                       clipHeight: 200,
@@ -1047,6 +1051,7 @@ fc.typing.events = fc.typing.events || {};
         scoreGraph: {},
         scoreSpec: {}
     };
+    ns.timeBar = null;
     ns.speedGauge = null;
     ns.speedGraph = null;
     ns.scoreGraph = null;
@@ -1064,6 +1069,7 @@ fc.typing.events = fc.typing.events || {};
         return new Chart(node).Radar(data, options);
     };
     ns.renderGraphics = function(){
+        ns.timeBar = fc.viz.template.timeBar.draw("#" + graphicID.timeBar, "#" + htmlID.sound, ns.options.timeBar);
         ns.speedGauge = fc.graphics.speedGauge("#" + graphicID.speedGauge, ns.options.speedGauge);
         ns.speedGauge.render();
         var graphicData = playInfo.graphicData,
@@ -1099,6 +1105,7 @@ fc.typing.events = fc.typing.events || {};
                 diffTime += nodes.typingSound.currentTime - preTime;
             }
             preTime = nodes.typingSound.currentTime;
+            ns.timeBar.update();
             if(!playInfo.flag.intermission &&
                !nodes.typingSound.paused &&
                events.status.called % events.callInterval == 0){

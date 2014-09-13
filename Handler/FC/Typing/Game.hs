@@ -16,10 +16,9 @@ getFCTypingGameR = do
   fullscreenLayout $ do
     setTitle "FC -Typing Game-"
     addStylesheetRemote "http://fonts.googleapis.com/css?family=Poiret+One"
+    addScript $ StaticR js_fc_visualize_js
     addScript $ StaticR js_fc_typingGame_js
     let gauge = $(widgetFile "graphics/gauge")
-        scorebar = $(widgetFile "graphics/score-bar")
-        timebar = $(widgetFile "graphics/time-bar")
         speedGraph = $(widgetFile "graphics/speed-graph2") :: Widget
         scoreSpec = $(widgetFile "graphics/score-spec")
         scoreGraph = $(widgetFile "graphics/score-graph2")

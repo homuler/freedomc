@@ -39,9 +39,9 @@ $maybe musicData <- mMusicData
                 <td #combo-cell>0
       <div .game-status>
         <div #difficulty>Difficulty
-        <div .bar-group>
-          ^{scorebar}
-          ^{timebar}
+        <div .bar-group #bar-group>
+          <div #score-bar>
+          <div #time-bar>
         <div .graph-group>
           <div .board style="margin-top: 50px">
             ^{gauge}

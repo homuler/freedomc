@@ -303,6 +303,10 @@ fc.util = fc.util || {};
             return toRadarData(avgData, "avg-data");
         }
     };
+    ns.renderTimeBar = function(div, sound){
+        var timeBar = fc.viz.template.timeBar.draw(div, sound);
+        timeBar.update();
+    };
 })(fc.viz);
 
 (function(ns){
@@ -591,6 +595,95 @@ fc.util = fc.util || {};
                 .attr("height", cfg.h)
                 .datum(d)
                 .call(chart);
+        }
+    };
+    ns.timeBar = {
+        target$: null,
+        config: null,
+        loaded: false,
+        xScale: null,
+        timeBar: null,
+        draw: function(div, audio, options){
+            this.config = this.defaultConfig();
+            for(x in options){
+                this.config[x] = options[x];
+                console.log(this.config[x]);
+            }
+            console.log(options);
+            console.log(this.config);
+            this.target$ = $(audio);
+            var svg = d3.select(div)
+                    .append("svg")
+                    .attr("width", this.config.width)
+                    .attr("height", this.config.height);
+
+            var barW = this.config.width - this.config.margin.left - this.config.margin.right,
+                barH = this.config.height - this.config.margin.top - this.config.margin.buttom;
+            var curTime = this.target$[0].currentTime,
+                dur = this.target$[0].duration;
+            if(isFinite(dur)){
+                this.loaded = true;
+            } else {
+                dur = 100;
+            }
+            this.xScale = d3.scale.linear()
+                       .range([0, barW])
+                       .domain([0, dur]);
+            this.timeBar = svg.append("g")
+                .attr("x", this.config.margin.left)
+                .attr("y", this.config.margin.top)
+                .append("rect")
+                .style("fill", this.config.color)
+                .attr("height", barH)
+                .attr("width", this.xScale(curTime));
+            console.log(curTime);
+            console.log(dur);
+
+            return this;
+        },
+        update: function(){
+            var curTime = this.target$[0].currentTime;
+            var dur = this.target$[0].duration;
+            if(!this.loaded){
+                if(isFinite(dur)){
+                    this.loaded = true;
+                    console.log("music loaded");
+                    var barW = this.config.width - this.config.margin.left - this.config.margin.right;
+                    this.xScale = d3.scale.linear()
+                                    .range([0, barW])
+                                    .domain([0, dur]);
+                }
+            }
+            this.timeBar//.transition().duration(this.config.interval)
+                        .attr("width", this.xScale(curTime));
+            return this;
+        },
+        loop: function(){
+
+        },
+        defaultConfig: function(cfg){
+            if(cfg){
+                for(x in cfg){
+                    config.x = cfg.x;
+                }
+                return;
+            }
+            var margin = {
+                top: 0,
+                left: 0,
+                buttom: 0,
+                right: 0
+            };
+            var width = $(window).width()/3,
+                height = 20,
+                color = "blue";
+            return {
+                interval: 100,
+                width: width,
+                height: height,
+                color: color,
+                margin: margin
+            };
         }
     };
 })(fc.viz.template = fc.viz.template || {});
