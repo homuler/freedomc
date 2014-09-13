@@ -30,8 +30,6 @@ getFCTypingResultR = do
   musicDataMap <- FCDB.getDataMap :: Handler (Map.Map Text FCMusicData)
   typingMusicDataMap <- FCDB.getDataMapWithKey fCTypingMusicDataMusicId
   let typingRecords = map (\(Entity _ x) -> FCDB.fromFCTR2FCTRC usersMap musicDataMap typingMusicDataMap x) typingRecords'
-  $logInfo $ T.pack $ show typingRecords
-  $logInfo $ T.pack $ show typingRecords'
   selectRep $ do
     provideRep $ return $(shamletFile "templates/fc/fc-typing-record.hamlet")
     provideRep $ return $ object ["records" .= typingRecords]
