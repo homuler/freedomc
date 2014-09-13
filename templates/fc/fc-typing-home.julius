@@ -11,6 +11,7 @@ fc.thumbnail = fc.thumbnail || {};
     ns.focusId = -1;
     ns.init = function(){
         ns.nodes.$popup = $("#popup-thumbnail");
+        ns.nodes.$popup.attr("y", ($(window).height()-ns.nodes.$popup.height())/2 + 25);
         ns.nodes.$popup.hide();
 
         ns.nodes.$thumbnails = $(".music-thumbnail");
