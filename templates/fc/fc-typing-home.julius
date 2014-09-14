@@ -11,7 +11,6 @@ fc.thumbnail = fc.thumbnail || {};
     ns.focusId = -1;
     ns.init = function(){
         ns.nodes.$popup = $("#popup-thumbnail");
-        ns.nodes.$popup.attr("y", ($(window).height()-ns.nodes.$popup.height())/2 + 25);
         ns.nodes.$popup.hide();
 
         ns.nodes.$thumbnails = $(".music-thumbnail");
@@ -45,6 +44,8 @@ fc.thumbnail = fc.thumbnail || {};
                 $musicContainer.show();
                 $musicContainer.children(".game-sound").get(0).play();
                 ns.nodes.$popup.show();
+                console.log(ns.nodes.$popup.height());
+                ns.nodes.$popup.css("top", ($(window).height()-ns.nodes.$popup.height())/2 + 25);
                 return;
             }
             console.log("new element will be created");
@@ -75,6 +76,8 @@ fc.thumbnail = fc.thumbnail || {};
 
             $musicContainer.insertBefore("#game-form");
             ns.nodes.$popup.show();
+            console.log(ns.nodes.$popup.height());
+            ns.nodes.$popup.css("top", ($(window).height()-ns.nodes.$popup.height())/2 + 25);
             $musicNode.get(0).play();
 
             var ajaxOption = {
@@ -103,7 +106,7 @@ fc.thumbnail = fc.thumbnail || {};
                             sum += data.records[i].score;
                         }
                         record.highest = maxScore;
-                        record.average = sum / record.played;
+                        record.average = fc.util.roundN(sum / record.played, 5);
                     } else {
                         record = recordDefault;
                     }
@@ -117,6 +120,7 @@ fc.thumbnail = fc.thumbnail || {};
                     $playInfoNode.append($headerNode);
                     $playInfoNode.append($tableNode);
                     $musicContainer.append($playInfoNode);
+                    ns.nodes.$popup.css("top", ($(window).height()-ns.nodes.$popup.height())/2 + 25);
                 }
             };
             $.ajax(ajaxOption);
@@ -147,3 +151,8 @@ fc.thumbnail = fc.thumbnail || {};
 window.onload = function(){
     fc.thumbnail.init();
 };
+
+$(window).resize(function(){
+    var nodes = fc.thumbnail.nodes;
+    nodes.$popup.css("top", ($(window).height()-nodes.$popup.height())/2 + 25);
+});

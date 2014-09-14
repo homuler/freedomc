@@ -59,4 +59,3 @@ data TypingMusicInfoWithData = TypingMusicInfoWithData { musicInfo :: TypingMusi
 data MusicDataUpdated = MusicDataUpdated { newMusicInfo :: TypingMusicInfo,
                                            newSoundData :: Maybe FileInfo,
                                            newPictureData :: Maybe FileInfo }
-

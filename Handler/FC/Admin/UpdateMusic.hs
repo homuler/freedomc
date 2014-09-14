@@ -97,6 +97,7 @@ getFCUpdateMusicR musicId = do
         $(widgetFile "fc/fc-music-updater")
     Nothing -> error "No music data found"
 
+-- Config File stays untouch --
 postFCUpdateMusicR :: Text -> Handler Html
 postFCUpdateMusicR musicId = do
   mMusicData <- runDB $ get $ fromText2Id musicId
@@ -115,6 +116,7 @@ postFCUpdateMusicR musicId = do
           newPicturePath <- liftIO $ case FCDT.newPictureData newMusicData of
             Just pictureFile -> Just <$> ((pathSeparator:) <$> FCTI.writeToServer' packageDir pictureFile)
             Nothing -> return $ FCDT.pictureSrc $ FCDT.newMusicInfo newMusicData
+          $logInfo $ T.pack $ show $ FCDT.newMusicInfo newMusicData
           _ <- mapM (\i -> do
                         deleteSession $ T.pack $ "problem" ++ show i
                         deleteSession $ T.pack $ "startTime" ++ show i
@@ -124,7 +126,8 @@ postFCUpdateMusicR musicId = do
             updateWhere [FCMusicDataId ==. fromText2Id musicId]
                         [FCMusicDataSoundPath =. T.pack newSoundPath,
                          FCMusicDataPicturePath =. T.pack <$> newPicturePath,
-                         FCMusicDataGenre =.  map (T.pack . show) <$> (FCDT.genre $ FCDT.newMusicInfo newMusicData)]
+                         FCMusicDataGenre =.  map (T.pack . show) <$> (FCDT.genre $ FCDT.newMusicInfo newMusicData),
+                         FCMusicDataFormat =. (FCDT.format $ FCDT.newMusicInfo newMusicData)]
           setMessage "Music Updated"
           redirect FCTypingR
         FormFailure text -> do

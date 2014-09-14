@@ -1,7 +1,7 @@
 var fc = fc || {};
 fc.graphics = fc.graphics || {};
 fc.typing = fc.typing || {};
-fc.typing.util = fc.typing.util || {};
+fc.util = fc.util || {};
 fc.typing.status = fc.typing.status || {};
 fc.typing.status.gameInfo = fc.typing.status.gameInfo || {};
 fc.typing.status.playInfo = fc.typing.status.playInfo || {};
@@ -26,6 +26,8 @@ fc.typing.events = fc.typing.events || {};
                     if(!ns.timers.paused){
                         for(var i = 0; i < ns.timers.timers.length; i++){
                             if(ns.timers.timers[i]() === false){
+                                console.log("update stopped");
+                                console.log(ns.timers.timers[i]);
                                 ns.timers.timers.splice(i, 1);
                                 i--;
                             }
@@ -88,6 +90,7 @@ fc.typing.events = fc.typing.events || {};
         },
         graphicID: {
             timeBar: "time-bar",
+            scoreBar: "score-bar",
             speedGauge: "container-speed",
             speedGraph: "speed-graph",
             scoreGraph: "score-graph",
@@ -533,23 +536,6 @@ fc.typing.events = fc.typing.events || {};
 })(fc.typing);
 
 (function(ns){
-    ns.formatTime = function(seconds){
-        seconds = Math.floor(seconds);
-        var min = Math.floor(seconds / 60);
-        var sec = seconds % 60;
-        if(sec < 10){
-            sec = "0" + sec;
-        }
-        return min + ":" + sec;
-    };
-    ns.roundN = function(num, n){
-        var d = Math.pow(10, n);
-        var x = num * d;
-        return Math.round(x) / d;
-    };
-})(fc.typing.util);
-
-(function(ns){
     ns.problemData = [];
     ns.difficulty = 0;
     ns.maxScore = 0;
@@ -582,26 +568,23 @@ fc.typing.events = fc.typing.events || {};
         var points = Math.min(calcAvgPoint(sum / chCount), 21) + Math.min(calcMaxAvgPoint(maxAvg), 13);
         ns.maxType = chCount;
         maxScores = fc.data.maxScores;
+        var difficulty = -1;
         switch (true) {
-            case points < 5:  ns.maxScore = maxScores[0];
-                              return 0;
+            case points < 5:  difficulty =  0;
                               break;
-            case points < 8:  ns.maxScore = maxScores[1];
-                              return 1;
+            case points < 8:  difficulty = 1;
                               break;
-            case points < 13: ns.maxScore = maxScores[2];
-                              return 2;
+            case points < 13: difficulty = 2;
                               break;
-            case points < 18: ns.maxScore = maxScores[3];
-                              return 3;
+            case points < 18: difficulty = 3;
                               break;
-            case points < 34: ns.maxScore = maxScores[4];
-                              return 4;
+            case points < 34: difficulty = 4;
                               break;
-            default: ns.maxScore = maxScores[5];
-                     return 5;
+            default: difficulty =  5;
         }
-        return -1;
+        ns.maxScore = maxScores[difficulty];
+        fc.typing.graphics.options.scoreBar.maxValue = ns.maxScore;
+        return difficulty;
 
         function calcAvgPoint(avg){
             return fib(Math.floor((avg - 150) / 50));
@@ -828,7 +811,6 @@ fc.typing.events = fc.typing.events || {};
             resetCurrentProblem(ns.problemID);
         }
         if(ns.problemID >= gameInfo.problemData.length){
-            console.log("play fin");
             ns.flag.justFin = true;
             clearProblems();
             return false;
@@ -845,9 +827,6 @@ fc.typing.events = fc.typing.events || {};
             ns.problemID++;
             ns.spec.combo = 0;
             if(ns.problemID >= gameInfo.problemData.length){
-                console.log("game fin");
-                console.log(ns.score);
-                console.log(ns.spec);
                 ns.flag.justFin = true;
                 clearProblems();
                 return false;
@@ -888,11 +867,9 @@ fc.typing.events = fc.typing.events || {};
             nodes.$problemRaw.removeClass("focus");
         }
         function resetCurrentProblem(pId){
-            //console.log("reset called");
             var gameInfo = fc.typing.status.gameInfo,
                 nodes = fc.typing.nodes;
             if(pId < 0 || pId >= gameInfo.problemData.length){
-              //  console.log("invalid function call");
                 return;
             }
             var problemData = gameInfo.problemData;
@@ -905,7 +882,6 @@ fc.typing.events = fc.typing.events || {};
         }
         function clearProblems(){
             var nodes = fc.typing.nodes;
-            //console.log("clearProblems called");
             nodes.$problemID.html("FIN");
             nodes.$problemRuby.html("Ruby");
             nodes.$problemCaption.html("Caption");
@@ -993,14 +969,12 @@ fc.typing.events = fc.typing.events || {};
         if(ns.spec.totalTime == 0){
             return 0;
         }
-        console.log("get speed called");
-        console.log(ns.spec.correct * 60 / ns.spec.totalTime);
         return ns.spec.correct * 60 / ns.spec.totalTime;
     };
     ns.displayFinPage = function(){
         var nodes = fc.typing.nodes,
             gameInfo = fc.typing.status.gameInfo;
-            util = fc.typing.util;
+            util = fc.util;
         nodes.$resultData.removeAttr("hidden");
         nodes.$resDifficulty.html(fc.data.difficulties[gameInfo.difficulty]);
         nodes.$resMaxScore.html(gameInfo.maxScore);
@@ -1027,18 +1001,41 @@ fc.typing.events = fc.typing.events || {};
         nodes.$resScoreSumRaw.html(util.roundN(ns.scoreFuncs.getScoreSumRaw(), 2));
         nodes.$resCorrectRate.html(100*util.roundN(ns.scoreFuncs.getCorrectRate(), 2) + "%");
         var sum = util.roundN(ns.scoreFuncs.getScoreSum(), 2),
-            sumStr = sum + " (" + fc.typing.util.roundN((100*sum/gameInfo.maxScore), 2) + "%)";
+            sumStr = sum + " (" + util.roundN((100*sum/gameInfo.maxScore), 2) + "%)";
         nodes.$resScoreSum.html(sumStr);
     };
 })(fc.typing.status.playInfo);
 
 (function(ns){
     var playInfo = fc.typing.status.playInfo,
+        gameInfo = fc.typing.status.gameInfo,
         graphicID = fc.typing.constants.graphicID,
         htmlID = fc.typing.constants.htmlID;
     ns.options = {
         timeBar: {
-            color: "#9966ff"
+            margin: {
+                top: 10,
+                left: 50,
+                right: 0,
+                buttom: 0
+            },
+            height: 30,
+            color: "#9966ff",
+            label: "Time"
+        },
+        scoreBar: {
+            margin: {
+                top: 10,
+                left: 50,
+                right: 0,
+                buttom: 0
+            },
+            height: 30,
+            maxValue: gameInfo.maxScore,
+            label: "Score",
+            update: function(){
+                return playInfo.scoreFuncs.getScoreSum();
+            }
         },
         speedGauge: { size: 200,
                       clipWidth: 200,
@@ -1052,6 +1049,7 @@ fc.typing.events = fc.typing.events || {};
         scoreSpec: {}
     };
     ns.timeBar = null;
+    ns.scoreBar = null;
     ns.speedGauge = null;
     ns.speedGraph = null;
     ns.scoreGraph = null;
@@ -1069,7 +1067,8 @@ fc.typing.events = fc.typing.events || {};
         return new Chart(node).Radar(data, options);
     };
     ns.renderGraphics = function(){
-        ns.timeBar = fc.viz.template.timeBar.draw("#" + graphicID.timeBar, "#" + htmlID.sound, ns.options.timeBar);
+        ns.timeBar = fc.viz.template.TimeBar.draw("#" + graphicID.timeBar, "#" + htmlID.sound, ns.options.timeBar);
+        ns.scoreBar = fc.viz.template.BarGraph.draw("#" + graphicID.scoreBar, ns.options.scoreBar);
         ns.speedGauge = fc.graphics.speedGauge("#" + graphicID.speedGauge, ns.options.speedGauge);
         ns.speedGauge.render();
         var graphicData = playInfo.graphicData,
@@ -1106,6 +1105,7 @@ fc.typing.events = fc.typing.events || {};
             }
             preTime = nodes.typingSound.currentTime;
             ns.timeBar.update();
+            ns.scoreBar.update();
             if(!playInfo.flag.intermission &&
                !nodes.typingSound.paused &&
                events.status.called % events.callInterval == 0){
@@ -1133,8 +1133,6 @@ fc.typing.events = fc.typing.events || {};
                     : (playInfo.spec.correct - preCorrect)*60/diffTime;
                 playInfo.spec.maxSpeed =
                     Math.max(playInfo.spec.maxSpeed, deltaSpeed);
-                console.log("max speed: " + (playInfo.spec.maxSpeed));
-                console.log("total time = " + (playInfo.spec.totalTime));
                 ns.updateSpeedGraph(deltaSpeed);
                 ns.updateScoreBar();
                 ns.updateTimeBar();
@@ -1153,43 +1151,43 @@ fc.typing.events = fc.typing.events || {};
     ns.updateSpeedGauge = function(){
         var typingSpeed = playInfo.getSpeed();
         playInfo.score.speed =
-            fc.typing.util.roundN(playInfo.scoreFuncs.getSpeedScore(typingSpeed), 2);
-        ns.speedGauge.update(fc.typing.util.roundN(typingSpeed, 2));
+            fc.util.roundN(playInfo.scoreFuncs.getSpeedScore(typingSpeed), 2);
+        ns.speedGauge.update(fc.util.roundN(typingSpeed, 2));
     };
     ns.updateSpeedGraph = function(speed){
         ns.speedGraph.addData(
-            [fc.typing.util.roundN(speed, 2)],
-            fc.typing.util.formatTime(fc.typing.nodes.typingSound.currentTime));
+            [fc.util.roundN(speed, 2)],
+            fc.util.formatTime(fc.typing.nodes.typingSound.currentTime));
     };
     ns.updateScoreGraph = function(){
         ns.scoreGraph.addData(
-            [fc.typing.util.roundN(playInfo.scoreFuncs.getScoreSum(), 2)],
-            fc.typing.util.formatTime(fc.typing.nodes.typingSound.currentTime));
+            [fc.util.roundN(playInfo.scoreFuncs.getScoreSum(), 2)],
+            fc.util.formatTime(fc.typing.nodes.typingSound.currentTime));
     };
     ns.updateScoreSpec = function(){
         var gameInfo = fc.typing.status.gameInfo;
         ns.scoreSpec.datasets[0].points[0].value =
-            fc.typing.util.roundN(playInfo.score.correct, 2)/(0.4*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.correct, 2)/(0.4*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[0].value =
-            fc.typing.util.roundN(playInfo.spec.correct, 2)/gameInfo.maxType;
+            fc.util.roundN(playInfo.spec.correct, 2)/gameInfo.maxType;
         ns.scoreSpec.datasets[0].points[1].value =
-            fc.typing.util.roundN(playInfo.score.combo, 2)/(0.1*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.combo, 2)/(0.1*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[1].value =
-            fc.typing.util.roundN(playInfo.spec.combo, 2)/gameInfo.maxType;
+            fc.util.roundN(playInfo.spec.combo, 2)/gameInfo.maxType;
         ns.scoreSpec.datasets[0].points[2].value =
-            fc.typing.util.roundN(playInfo.score.speed, 2)/(0.3*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.speed, 2)/(0.3*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[2].value =
             playInfo.getSpeed()/500;
         ns.scoreSpec.datasets[0].points[3].value =
-            fc.typing.util.roundN(playInfo.score.maxCombo, 2)/(0.05*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.maxCombo, 2)/(0.05*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[3].value =
             playInfo.spec.maxCombo/gameInfo.maxType;
         ns.scoreSpec.datasets[0].points[4].value =
-            fc.typing.util.roundN(playInfo.score.maxSpeed, 2)/(0.1*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.maxSpeed, 2)/(0.1*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[4].value =
             playInfo.spec.maxSpeed/600;
         ns.scoreSpec.datasets[0].points[5].value =
-            fc.typing.util.roundN(playInfo.score.solved, 2)/(0.05*gameInfo.maxScore);
+            fc.util.roundN(playInfo.score.solved, 2)/(0.05*gameInfo.maxScore);
         ns.scoreSpec.datasets[1].points[5].value =
             playInfo.spec.solved/gameInfo.problemData.length;
         ns.scoreSpec.update();

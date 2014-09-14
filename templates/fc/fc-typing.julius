@@ -6,7 +6,7 @@ fc.typing.events = fc.typing.events || {};
 fc.typing.events.postRecord = function(){
     var playInfo = fc.typing.status.playInfo,
         gameInfo = fc.typing.status.gameInfo,
-        util = fc.typing.util,
+        util = fc.util,
         postBtn = this;
     $('<form/>', { action: '@{FCTypingGameR}', method: 'post'})
     .append($('<input/>', {type: 'hidden', name: 'score-sum-val', value: util.roundN(playInfo.scoreFuncs.getScoreSum(), 5)}))
@@ -42,6 +42,8 @@ window.onload = function(){
     gameInfo.difficulty = gameInfo.evalDifficulty(gameInfo.problemData);
     fc.typing.graphics.renderGraphics();
     playInfo.scoreConstants.resetValue();
+    var resultNode = $("#result-data");
+    resultNode.css("top", ($(window).height()-resultNode.height())/2 + 25);
     console.log("loaded");
     console.log(fc.typing.status.gameInfo);
     $("#post-btn").on("click", function(e){

@@ -1,5 +1,6 @@
 var fc = fc || {};
 fc.data = fc.data || {};
+fc.util = fc.util || {};
 
 (function(ns){
     ns.tempoMarks =
@@ -24,3 +25,20 @@ fc.data = fc.data || {};
         ns.maxScoresMap[ns.difficulties[i]] = ns.maxScores[i];
     }
 })(fc.data = fc.data || {});
+
+(function(ns){
+    ns.formatTime = function(seconds){
+        seconds = Math.floor(seconds);
+        var min = Math.floor(seconds / 60);
+        var sec = seconds % 60;
+        if(sec < 10){
+            sec = "0" + sec;
+        }
+        return min + ":" + sec;
+    };
+    ns.roundN = function(num, n){
+        var d = Math.pow(10, n);
+        var x = num * d;
+        return Math.round(x) / d;
+    };
+})(fc.util);
