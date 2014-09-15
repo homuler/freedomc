@@ -16,39 +16,17 @@ $maybe musicData <- mMusicData
         <img .typing-background src=@{StaticR img_default_thumbnail_png}>
     <div #game-display>
       <div .music-info>
+        <div #difficulty-graph>
         <div .main-info>
           <div .title>#{fCMusicDataTitle musicData}
           <div .musician >#{fCMusicDataMusician musicData}
-        <div .sub-info>
-          <div .score-table>
-            <table .table>
-              <tr>
-                <th>Specification
-                <th>
-              <tr>
-                <td>Score Sum
-                <td #score-sum-cell>0
-              <tr>
-                <td>Correct
-                <td #correct-cell>0
-              <tr>
-                <td>Miss
-                <td #miss-cell>0
-              <tr>
-                <td>Combo
-                <td #combo-cell>0
       <div .game-status>
-        <div #difficulty>Difficulty
         <div .bar-group #bar-group>
           <div #score-bar>
           <div #time-bar>
-        <div .graph-group>
-          <div .board style="margin-top: 50px">
-            ^{gauge}
-            ^{scoreSpec}
-          <div>
-            ^{speedGraph}
-            ^{scoreGraph}
+      <div .play-graph>
+        <div #score-graph>
+        ^{gauge}
       <div .problem-info>
         <div #tempo-mark>Tempo
         <div #problem-id>Problem Number ##

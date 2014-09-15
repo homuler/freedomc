@@ -5,6 +5,29 @@ body {
      overflow: hidden;
 }
 
+.bar-group {
+    padding-top: 50px;
+}
+
+.axis {
+    path, line {
+        fill: none;
+        stroke: #121401;
+        stroke-width: 2px;
+        shape-rendering: crispEdges;
+    }
+}
+
+.point {
+    stroke: grey;
+    stroke-width: 3px;
+    opacity: 0;
+}
+
+.point:hover {
+    opacity: 0.5;
+}
+
 .graph {
   width: 200px;
   height: 200px;
@@ -32,15 +55,18 @@ video {
 .music-info {
     position: static;
     float: left;
-    margin-top: 50px;
-    width: 45%;
+    width: 60%;
+    top: -50px;
     font-weight: bold;
-    font-family: 'Poiret One', cursive
+    font-family: 'Poiret One', cursive;
     height: 200px;
 }
 
 .main-info {
-    margin-left: 10%;
+    margin-top: 10px;
+    margin-left: 50px;
+    display: inline;
+    float: left;
 }
 
 .score-table {
@@ -50,11 +76,9 @@ video {
 }
 
 .game-status {
-    position: static;
     float: right;
-    margin-left: 10%;
-    margin-top: 70px;
-    margin-right: 5%;
+    margin-right: 50px;
+    height: 200px;
 }
 
 .graph-group {
@@ -74,6 +98,7 @@ video {
 }
 
 .sub-info {
+    width: 45%;
     margin-left: 10%;
     font-size: 1.0em;
 }
@@ -107,7 +132,7 @@ div .board {
 }
 
 .focus {
-    color: white;
+    color: #ffffff;
     text-shadow: 5px 5px 1px #999999;
 }
 
@@ -127,12 +152,6 @@ div#combo {
     color: white;
     text-shadow: 5px 5px 1px #999999;
 }
-
-/*div#score-board div {
-    float: left;
-    margin-left: 10px;
-    margin-right: 10px;
-}*/
 
 div#score {
     font-size: 2.0em;
@@ -164,11 +183,12 @@ div#miss {
 
 .problem-info {
     position: fixed;
-    bottom: 10%;
-    width: 55%;
+    bottom: 50px;
+    width: 90%;
     left: 3%;
-    background-color: #224422;
+    background-color: #b5cf6b;
     opacity: 0.8;
+    box-shadow: inset 0 0 50px rgba(140, 111, 49, 1);
 }
 
 #problem-display {
@@ -228,4 +248,28 @@ div #play-box {
     margin-left: 10px;
     margin-right: 10px;
     display: inline;
+}
+
+.dummy {
+    fill-opacity: 0.3;
+}
+
+#difficulty-graph {
+    display: inline;
+    float: left;
+}
+
+#game-display {
+    margin-top: 50px;
+}
+
+#score-graph {
+    display: inline;
+}
+
+#speed-gague {
+    display: inline;
+}
+
+#typing-game {
 }

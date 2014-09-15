@@ -19,9 +19,6 @@ getFCTypingGameR = do
     addScript $ StaticR js_fc_visualize_js
     addScript $ StaticR js_fc_typingGame_js
     let gauge = $(widgetFile "graphics/gauge")
-        speedGraph = $(widgetFile "graphics/speed-graph2") :: Widget
-        scoreSpec = $(widgetFile "graphics/score-spec")
-        scoreGraph = $(widgetFile "graphics/score-graph2")
     $(widgetFile "fc/fc-typing")
 
 postFCTypingGameR :: Handler Html

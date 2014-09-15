@@ -27,7 +27,6 @@ fc.typing.events = fc.typing.events || {};
                         for(var i = 0; i < ns.timers.timers.length; i++){
                             if(ns.timers.timers[i]() === false){
                                 console.log("update stopped");
-                                console.log(ns.timers.timers[i]);
                                 ns.timers.timers.splice(i, 1);
                                 i--;
                             }
@@ -91,10 +90,9 @@ fc.typing.events = fc.typing.events || {};
         graphicID: {
             timeBar: "time-bar",
             scoreBar: "score-bar",
+            difficulty: "difficulty-graph",
             speedGauge: "container-speed",
-            speedGraph: "speed-graph",
             scoreGraph: "score-graph",
-            scoreSpec: "score-spec"
         },
         graphicOptions: {
             speedGauge: { size: 200,
@@ -528,7 +526,7 @@ fc.typing.events = fc.typing.events || {};
     ns.renderHTML = function(){
         var pId = fc.typing.status.playInfo.problemID,
             gameInfo = fc.typing.status.gameInfo;
-        ns.nodes.$difficulty.html(fc.data.difficulties[gameInfo.difficulty]);
+        //ns.nodes.$difficulty.html(fc.data.difficulties[gameInfo.difficulty]);
         ns.nodes.$problemID.html(pId+1);
         ns.nodes.$problemRuby.html(gameInfo.problemData[pId].problem);
         ns.nodes.$problemCaption.html(gameInfo.problemData[pId].display);
@@ -584,6 +582,11 @@ fc.typing.events = fc.typing.events || {};
         }
         ns.maxScore = maxScores[difficulty];
         fc.typing.graphics.options.scoreBar.maxValue = ns.maxScore;
+        fc.typing.graphics.options.difficulty.data = [{value:difficulty+1},
+                                                      {value:5-difficulty,
+                                                       dummy: true}];
+        fc.typing.graphics.options.difficulty.label = fc.data.difficulties[difficulty];
+        fc.typing.graphics.options.scoreGraph.maxValue.y = ns.maxScore;
         return difficulty;
 
         function calcAvgPoint(avg){
@@ -651,6 +654,7 @@ fc.typing.events = fc.typing.events || {};
 (function(ns){
     ns.flag = {
         loaded: false,
+        downloaded: false,
         intermission: true,
         paused: true,
         justFin: false
@@ -1017,7 +1021,7 @@ fc.typing.events = fc.typing.events || {};
                 top: 10,
                 left: 50,
                 right: 0,
-                buttom: 0
+                bottom: 0
             },
             height: 30,
             color: "#9966ff",
@@ -1028,13 +1032,39 @@ fc.typing.events = fc.typing.events || {};
                 top: 10,
                 left: 50,
                 right: 0,
-                buttom: 0
+                bottom: 0
             },
             height: 30,
             maxValue: gameInfo.maxScore,
             label: "Score",
             update: function(){
                 return playInfo.scoreFuncs.getScoreSum();
+            }
+        },
+        difficulty: {
+            fontSize: 20,
+            fontColor: "white",
+            width: 160,
+            height: 160,
+            innerR: 50,
+            outerR: 70,
+            margin: {
+                top: 0,
+                left: 20,
+                bottom: 0,
+                right: 0
+            },
+            color: function(d){
+                var colors = d3.scale.quantize()
+                               .range(["#6baed6", "#74c476", "#fd8d3c",
+                                       "#e377c2", "#bcbd22", "#7b4173"])
+                               .domain([1, 6]);
+                console.log(d);
+                if(d.dummy){
+                    console.log(d.dummy);
+                    return "#ffffff";
+                }
+                return colors(d.value);
             }
         },
         speedGauge: { size: 200,
@@ -1044,53 +1074,46 @@ fc.typing.events = fc.typing.events || {};
                       maxValue: 800,
                       transitionMs: 1000
                     },
-        speedGraph: {},
-        scoreGraph: {},
-        scoreSpec: {}
+        scoreGraph: {
+            margin: {
+                left: 100,
+                top: 20,
+                right: 100,
+                bottom: 50
+            },
+            maxValue: {
+                x: 200,
+                y: 1500000
+            },
+            width: ($(window).width() * 0.65),
+            height: ($(window).height() * 0.3)
+        },
+    };
+    ns.data = {
+        scoreGraph: []
     };
     ns.timeBar = null;
     ns.scoreBar = null;
+    ns.difficulty = null;
     ns.speedGauge = null;
-    ns.speedGraph = null;
     ns.scoreGraph = null;
-    ns.scoreSpec = null;
-    ns.initLineChart = function(id, data, options){
-        var node = $("#" + id)[0].getContext("2d");
-        return new Chart(node).Line(data, options);
-    };
-    ns.initPolarAreaChart = function(id, data, options){
-        var node = $("#" + id)[0].getContext("2d");
-        return new Chart(node).PolarArea(data, options);
-    };
-    ns.initRadarChart = function(id, data, options){
-        var node = $("#" + id)[0].getContext("2d");
-        return new Chart(node).Radar(data, options);
-    };
     ns.renderGraphics = function(){
         ns.timeBar = fc.viz.template.TimeBar.draw("#" + graphicID.timeBar, "#" + htmlID.sound, ns.options.timeBar);
         ns.scoreBar = fc.viz.template.BarGraph.draw("#" + graphicID.scoreBar, ns.options.scoreBar);
+        ns.difficulty = fc.viz.template.DonutChart.draw("#" + graphicID.difficulty, ns.options.difficulty);
         ns.speedGauge = fc.graphics.speedGauge("#" + graphicID.speedGauge, ns.options.speedGauge);
         ns.speedGauge.render();
-        var graphicData = playInfo.graphicData,
-            gameInfo = fc.typing.status.gameInfo;
-        /*graphicData.scoreSpec[0].value = 0.4*gameInfo.maxScore;
-        graphicData.scoreSpec[1].value = 0.1*gameInfo.maxScore;
-        graphicData.scoreSpec[2].value = 0.3*gameInfo.maxScore;
-        graphicData.scoreSpec[3].value = 0.05*gameInfo.maxScore;
-        graphicData.scoreSpec[4].value = 0.1*gameInfo.maxScore;
-        graphicData.scoreSpec[5].value = 0.05*gameInfo.maxScore;*/
-        ns.speedGraph
-            = ns.initLineChart(graphicID.speedGraph,
-                                  graphicData.speedGraph,
-                                  ns.options.speedGraph);
-        ns.scoreGraph
-            = ns.initLineChart(graphicID.scoreGraph,
-                                  graphicData.speedGraph,
-                                  ns.options.speedGraph);
-        ns.scoreSpec
-            = ns.initRadarChart(graphicID.scoreSpec,
-                                      graphicData.scoreSpec,
-                                      ns.options.scoreSpec);
+
+        var scoreData = {
+            "correct": playInfo.score.correct,
+            "average-speed": playInfo.score.speed,
+            "combo": playInfo.score.combo,
+            "solved": playInfo.score.solved,
+            "max-speed": playInfo.score.maxSpeed,
+            "max-combo": playInfo.score.maxCombo
+        };
+        ns.data.scoreGraph.push({ label: 0, values: scoreData });
+        ns.scoreGraph = fc.viz.template.LineAreaGraph.draw("#" + graphicID.scoreGraph, ns.data.scoreGraph, ns.options.scoreGraph);
     };
     ns.updateGraphics = function(){
         var nodes = fc.typing.nodes,
@@ -1110,35 +1133,43 @@ fc.typing.events = fc.typing.events || {};
                !nodes.typingSound.paused &&
                events.status.called % events.callInterval == 0){
                 playInfo.spec.totalTime += diffTime;
-                updateGraphics(diffTime, preCorrect);
+                updateGraphics(diffTime, preCorrect, preTime);
                 preCorrect = playInfo.spec.correct;
                 diffTime = 0;
             } else if(playInfo.flag.justFin){
                 playInfo.spec.totalTime += diffTime;
-                updateGraphics(diffTime, preCorrect);
+                updateGraphics(diffTime, preCorrect, preTime);
                 playInfo.displayFinPage();
                 return false;
             }
             events.status.called++;
             return true;
 
-            function updateGraphics(diffTime, preCorrect){
-                events.callInterval =
-                    isNaN(fc.typing.nodes.typingSound.duration) ?
-                        events.callInterval :
-                        Math.round(fc.typing.nodes.typingSound.duration/2);
+            function updateGraphics(diffTime, preCorrect, preTime){
                 playInfo.score.maxSpeed = playInfo.scoreFuncs.getMaxSpeedBonus(playInfo.spec.maxSpeed);
                 playInfo.score.maxCombo = playInfo.scoreFuncs.getMaxComboBonus(playInfo.spec.maxCombo);
                 var deltaSpeed = diffTime == 0 ? 0
                     : (playInfo.spec.correct - preCorrect)*60/diffTime;
                 playInfo.spec.maxSpeed =
                     Math.max(playInfo.spec.maxSpeed, deltaSpeed);
-                ns.updateSpeedGraph(deltaSpeed);
-                ns.updateScoreBar();
-                ns.updateTimeBar();
                 ns.updateSpeedGauge();
-                ns.updateScoreGraph();
-                ns.updateScoreSpec();
+                var scoreData = {
+                    "correct": playInfo.score.correct,
+                    "average-speed": playInfo.score.speed,
+                    "combo": playInfo.score.combo,
+                    "solved": playInfo.score.solved,
+                    "max-speed": playInfo.score.maxSpeed,
+                    "max-combo": playInfo.score.maxCombo
+                };
+                ns.data.scoreGraph.push({ label: preTime, values: scoreData});
+                if(!playInfo.flag.downloaded && isFinite(nodes.typingSound.duration)){
+                    playInfo.flag.downloaded = true;
+                    console.log("music downloaded");
+                    ns.options.scoreGraph.maxValue.x = nodes.typingSound.duration;
+                    ns.scoreGraph.update(ns.data.scoreGraph, ns.options.scoreGraph);
+                } else {
+                    ns.scoreGraph.update(ns.data.scoreGraph);
+                }
             }
         };
     };
@@ -1154,50 +1185,12 @@ fc.typing.events = fc.typing.events || {};
             fc.util.roundN(playInfo.scoreFuncs.getSpeedScore(typingSpeed), 2);
         ns.speedGauge.update(fc.util.roundN(typingSpeed, 2));
     };
-    ns.updateSpeedGraph = function(speed){
-        ns.speedGraph.addData(
-            [fc.util.roundN(speed, 2)],
-            fc.util.formatTime(fc.typing.nodes.typingSound.currentTime));
-    };
-    ns.updateScoreGraph = function(){
-        ns.scoreGraph.addData(
-            [fc.util.roundN(playInfo.scoreFuncs.getScoreSum(), 2)],
-            fc.util.formatTime(fc.typing.nodes.typingSound.currentTime));
-    };
-    ns.updateScoreSpec = function(){
-        var gameInfo = fc.typing.status.gameInfo;
-        ns.scoreSpec.datasets[0].points[0].value =
-            fc.util.roundN(playInfo.score.correct, 2)/(0.4*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[0].value =
-            fc.util.roundN(playInfo.spec.correct, 2)/gameInfo.maxType;
-        ns.scoreSpec.datasets[0].points[1].value =
-            fc.util.roundN(playInfo.score.combo, 2)/(0.1*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[1].value =
-            fc.util.roundN(playInfo.spec.combo, 2)/gameInfo.maxType;
-        ns.scoreSpec.datasets[0].points[2].value =
-            fc.util.roundN(playInfo.score.speed, 2)/(0.3*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[2].value =
-            playInfo.getSpeed()/500;
-        ns.scoreSpec.datasets[0].points[3].value =
-            fc.util.roundN(playInfo.score.maxCombo, 2)/(0.05*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[3].value =
-            playInfo.spec.maxCombo/gameInfo.maxType;
-        ns.scoreSpec.datasets[0].points[4].value =
-            fc.util.roundN(playInfo.score.maxSpeed, 2)/(0.1*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[4].value =
-            playInfo.spec.maxSpeed/600;
-        ns.scoreSpec.datasets[0].points[5].value =
-            fc.util.roundN(playInfo.score.solved, 2)/(0.05*gameInfo.maxScore);
-        ns.scoreSpec.datasets[1].points[5].value =
-            playInfo.spec.solved/gameInfo.problemData.length;
-        ns.scoreSpec.update();
-    };
 })(fc.typing.graphics);
 
 (function(ns){
     var playInfo = fc.typing.status.playInfo,
         nodes = fc.typing.nodes;
-    ns.callInterval = 50;
+    ns.callInterval = 10;
     ns.status = {
         called: 0
     }
