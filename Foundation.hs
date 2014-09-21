@@ -183,7 +183,7 @@ instance YesodAuth App where
     type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = FCHomeR
+    loginDest _ = FCTypingR
     -- Where to send a user after logout
     logoutDest _ = HomeR
 
