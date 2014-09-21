@@ -656,6 +656,7 @@ fc.typing.events = fc.typing.events || {};
 })(fc.typing.status.gameInfo);
 
 (function(ns){
+    var gameInfo = fc.typing.status.gameInfo;
     ns.flag = {
         loaded: false,
         downloaded: false,
@@ -761,44 +762,6 @@ fc.typing.events = fc.typing.events || {};
                 }
             ]
         }
-   /*     scoreSpec: [
-            {
-                value: 600000,
-                color: "#f7464a",
-                highlight: "#ff5a5e",
-                label: "Correct"
-            },
-            {
-                value: 400000,
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
-                label: "Combo"
-            },
-            {
-                value: 200000,
-                color: "#FDB45C",
-                highlight: "#FFC870",
-                label: "Speed"
-            },
-            {
-                value: 150000,
-                color: "#949FB1",
-                highlight: "#A8B3C5",
-                label: "Max Combo"
-            },
-            {
-                value: 150000,
-                color: "#F27855",
-                highlight: "#F48969",
-                label: "Max Speed"
-            },
-            {
-                value: 150000,
-                color: "#278912",
-                highlight: "#F48969",
-                label: "Solved"
-            }
-        ]*/
     };
     ns.renderProblemInfo = function(){
         var gameInfo = fc.typing.status.gameInfo,
@@ -928,7 +891,7 @@ fc.typing.events = fc.typing.events || {};
         getSpeedScore: function(speed){
             var a = ns.scoreConstants.speedA,
                 b = ns.scoreConstants.speedB;
-            return a * Math.pow(speed - 300, 3) + b;
+            return Math.min(1.2*gameInfo.scoreRate.speed*gameInfo.maxScore, a * Math.pow(speed - 300, 3) + b);
         },
         getSolvedScore: function(solved){
             var k = ns.scoreConstants.solvedK;
@@ -944,7 +907,7 @@ fc.typing.events = fc.typing.events || {};
             var m = fc.typing.status.gameInfo.maxType,
                 a = ns.scoreConstants.maxSpeedA,
                 b = ns.scoreConstants.maxSpeedB;
-            return ns.score.maxSpeed = a * Math.pow(maxSpeed - 400, 3) + b;
+            return Math.min(1.2*gameInfo.scoreRate.maxSpeed*gameInfo.maxScore, ns.score.maxSpeed = a * Math.pow(maxSpeed - 400, 3) + b);
         },
         getScoreSumRaw: function(){
             var scoresum = 0;
