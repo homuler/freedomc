@@ -28,71 +28,93 @@ $maybe musicData <- mMusicData
         <div #score-graph>
         ^{gauge}
       <div .problem-info>
-        <div #tempo-mark>Tempo
-        <div #problem-id>Problem Number ##
+        <div #tempo-info>
+          <div .tempo-sign-group>
+            <svg height=40 width=100%>
+              <g transform=translate(410,10)>
+                <use xlink:href=#g12994>
+                <text #tempo-mark x=-200 y=20 text-anchor=middle>Tempo Mark
+                <text x=-100 y=22>(
+                <text x=-50 y=22>=
+                <text #tempo x=-20 y=22>tempo )
+              <g transform=translate(600,10)>
+                <text y=22 text-anchor=start>Combo:
+                <text x=100 y=22 text-anchor=middle .ruby #combo>
         <div #problem-display>
-          <div .ruby #problem-ruby>Problem Ruby
-          <div .caption #problem-caption>Problem Caption
-          <div #problem-raw>Problem Raw
+          <svg height=180px width=100%>
+            <g transform=translate(0,0) #problem-number-graph>
+            <g transform=translate(140,0)>
+              <g #g-clef>
+                <text x=100 y=40 .ruby #problem-ruby>Problem Ruby
+                <text x=100 y=90 .caption #problem-caption>Problem Caption
+              <g #f-clef style="height: 60px;" transform=translate(0,120)>
+                <text x=100 y=35 .sub-caption #problem-raw>Problem
 
-    <div #result-data .result .panel .panel-primary hidden>
+    <div #result-data .result .panel .panel-primary .hidden>
       <div .panel-heading>Score Summary
-      <div .game-info>
-        <table .table>
-          <tr>
-            <th>Music Information
-            <th>
-          <tr>
-            <td .col-md-7>Difficulty
-            <td #res-difficulty>
-          <tr>
-            <td>Max Score
-            <td #res-max-score>
-          <tr>
-            <td>Max-min Type
-            <td #res-max-type>
-      <div .play-info>
-        <table .table>
-          <tr>
-            <th>Play Information
-            <th>Value
-            <th>Score
-          <tr>
-            <td .col-md-7>Correct
-            <td #res-correct>
-            <td #res-correct-score>
-          <tr>
-            <td>Average Speed
-            <td #res-avg-speed>
-            <td #res-avg-speed-score>
-          <tr>
-            <td>Combo
-            <td>-
-            <td #res-combo-score>
-          <tr>
-            <td>Solved
-            <td #res-solved>
-            <td #res-solved-score>
-          <tr>
-            <td>Max Speed
-            <td #res-max-speed>
-            <td #res-max-speed-score>
-          <tr>
-            <td>Max Combo
-            <td #res-max-combo>
-            <td #res-max-combo-score>
-      <hr>
       <div .result-summary>
         <div .row>
-          <p .col-md-9>Score Sum Raw
+          <p .col-md-8>Score Sum Raw
           <div #res-score-sum-raw>
         <div .row>
-          <p .col-md-9>Correction Rate
+          <p .col-md-8>Correction Rate
           <div #res-correct-rate>
         <hr>
-        <div .row>
-          <p .col-md-9>Score Sum
-          <div #res-score-sum>
+        <div #score-sum-group .row>
+          <p .col-md-6>Score Sum
+          <span #res-score-sum .col-md-2>
+          <span> /
+          <span #res-max-score>
+          <span #res-score-percent>
+      <div .play-result-graph>
+        <div #score-pie-chart>
+        <div #score-bar-graph>
+      <hr>
       <div .result-btn>
         <button #post-btn .form-btn .btn .btn-primary>Post and Back
         <button #cancel-btn .form-btn .btn .btn-warning>Cancel
+
+<div .hidden>
+  <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="744.09448819" height="1052.3622047" id="svg3033" version="1.1" inkscape:version="0.48.0 r9654" sodipodi:docname="trebClef.svg">
+    <title id="title3077">Treble Clef
+    <defs id="defs3035">
+      <linearGradient inkscape:collect="always" xlink:href="#linearGradient3013-7" id="linearGradient3776" x1="598.60864" y1="490.82504" x2="881.5011" y2="490.82504" gradientUnits="userSpaceOnUse"/>
+      <linearGradient id="linearGradient3013-7">
+        <stop id="stop3015-9" style="stop-color:#000000;stop-opacity:0.8263889" offset="0"/>
+        <stop id="stop3017-0" style="stop-color:#000000;stop-opacity:1" offset="1"/>
+      <linearGradient gradientTransform="translate(-368.00764,35.356037)" y2="490.82504" x2="881.5011" y1="490.82504" x1="598.60864" gradientUnits="userSpaceOnUse" id="linearGradient3793" xlink:href="#linearGradient3013-7" inkscape:collect="always"/>
+    <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="0.26488883" inkscape:cx="375" inkscape:cy="520" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="false" inkscape:window-width="919" inkscape:window-height="755" inkscape:window-x="2021" inkscape:window-y="84" inkscape:window-maximized="0"/>
+    <metadata id="metadata3038">
+      <rdf:RDF>
+        <cc:Work rdf:about="">
+          <dc:format>image/svg+xml
+          <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+          <dc:title>Treble Clef
+          <dc:creator>
+            <cc:Agent>
+              <dc:title>Jaschon
+          <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+          <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+          <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+          <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+    <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="g-clef-layer1">
+      <path clip-rule="evenodd" d="m 278.89443,840.50155 c 0,23.81128 27.14446,51.13314 48.1934,55.10814 0,0 22.50833,5.61337 41.03037,1.12235 3.34609,0.75146 59.49757,-9.54161 60.61992,-84.75534 l -11.84275,-91.53621 c 7.89194,-1.34811 33.64315,-13.76333 41.59154,-18.4785 21.81169,-12.94253 31.35491,-31.6355 39.85157,-45.46494 9.5416,-20.76836 15.15498,-34.94612 15.15498,-57.55603 0,-57.18514 -46.34057,-103.537 -103.50475,-103.537 -8.23865,0 -16.24347,0.97722 -23.93384,2.7962 l -10.21566,-73.46408 c 38.68406,-43.00577 77.89705,-95.86921 91.06534,-144.30935 12.91028,-63.9886 6.73573,-107.20722 -27.50408,-125.73087 -31.43232,-7.29691 -69.58907,35.64274 -92.05224,97.66561 -14.59381,33.11584 3.99757,96.38523 12.3491,122.3622 -61.52781,58.98316 -122.74275,101.28262 -129.0963,203.50537 0,80.05307 64.87388,144.93825 144.89309,144.93825 7.64521,0 20.2749,0.179 34.64295,-1.68352 l 6.7583,91.41204 c 0,0 2.59302,66.86221 -48.2934,75.92165 -20.19589,3.59282 -39.67419,7.75649 -34.07049,-5.61176 15.73873,-8.19672 34.07049,-21.26342 34.07049,-42.70421 0,-26.68328 -20.08462,-48.31598 -44.84894,-48.31598 -24.77399,0 -44.8586,21.6327 -44.8586,48.31598 z m 90.97502,-409.14096 9.53032,68.63443 c -42.22044,13.05702 -72.90129,52.42643 -72.90129,98.946 0,52.64896 62.94525,77.20203 61.23915,64.70619 -24.54017,-10.58656 -33.63348,-22.48575 -33.63348,-50.91061 0,-32.12895 21.95843,-59.1154 51.67336,-66.80577 l 22.66474,163.40547 c -5.09735,1.38036 -10.59784,2.54787 -16.55792,3.47993 -86.24858,-1.72868 -126.78709,-47.63224 -126.78709,-127.6837 0.002,-44.84571 52.80859,-96.57551 104.77221,-153.77194 z m 45.19726,275.96805 -22.59863,-162.77656 c 3.45736,-0.5386 7.01632,-0.83047 10.63171,-0.83047 38.10031,0 68.99403,30.905 68.99403,69.0166 -0.76275,30.66956 -2.22374,76.33608 -57.02711,94.59043 z M 366.99746,364.62256 c -15.54845,-52.45868 -1.49325,-78.60336 7.63231,-98.69927 21.56497,-47.45164 40.53692,-64.70619 59.85718,-80.1079 25.12392,9.85606 13.78429,80.1079 10.01248,80.1079 -11.83146,41.4464 -54.27605,74.39454 -77.50197,98.69927 z" id="path11" inkscape:connector-curvature="0" style="fill:url(#linearGradient3793);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-opacity:1"/>
+
+
+  <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.0" x="0.0000000" y="0.0000000" width="18.000000" height="20.000000" id="svg3083">
+    <defs id="defs3"/>
+    <g transform="translate(6.600000e-3,3.125356e-3)" id="f-clef-layer1">
+      <g transform="translate(-230.9546,-533.6597)" style="fill:#000000;fill-opacity:1.0000000" id="g2883">
+        <path d="M 248.25999,536.80200 C 248.26766,537.17138 248.11044,537.54065 247.82878,537.78185 C 247.46853,538.11076 246.91933,538.17813 246.47048,538.01071 C 246.02563,537.83894 245.69678,537.39883 245.67145,536.92060 C 245.63767,536.54689 245.75685,536.15479 246.02747,535.88867 C 246.28257,535.61680 246.66244,535.48397 247.03147,535.50645 C 247.41131,535.51452 247.77805,535.70601 248.00489,536.01019 C 248.17962,536.23452 248.26238,536.51954 248.25999,536.80200 z " style="fill:#000000;fill-opacity:1.0000000" id="path2885"/>
+      <g transform="translate(-230.9546,-533.6597)" style="fill:#000000;fill-opacity:1.0000000" id="g2887">
+        <path d="M 248.25999,542.64502 C 248.26772,543.01469 248.11076,543.38446 247.82878,543.62585 C 247.46853,543.95476 246.91933,544.02213 246.47048,543.85472 C 246.02537,543.68288 245.69655,543.24237 245.67145,542.76389 C 245.63651,542.38990 245.76354,542.00308 246.02700,541.73300 C 246.27663,541.45454 246.66060,541.32790 247.02845,541.34950 C 247.51230,541.36282 247.95159,541.69251 248.15162,542.12465 C 248.22565,542.28740 248.26043,542.46657 248.25999,542.64502 z " style="fill:#000000;fill-opacity:1.0000000" id="path2889"/>
+      <g transform="translate(-230.9546,-533.6597)" style="fill:#000000;fill-opacity:1.0000000" id="g2891">
+        <path d="M 243.97900,540.86798 C 244.02398,543.69258 242.76360,546.43815 240.76469,548.40449 C 238.27527,550.89277 235.01791,552.47534 231.69762,553.53261 C 231.25590,553.77182 230.58970,553.45643 231.28550,553.13144 C 232.62346,552.52289 234.01319,552.00050 235.24564,551.18080 C 237.96799,549.49750 240.26523,546.84674 240.82279,543.61854 C 241.14771,541.65352 241.05724,539.60795 240.56484,537.67852 C 240.20352,536.25993 239.22033,534.79550 237.66352,534.58587 C 236.25068,534.36961 234.74885,534.85905 233.74057,535.88093 C 233.47541,536.14967 232.95916,536.89403 233.04435,537.74747 C 233.64637,537.27468 233.60528,537.32732 234.09900,537.10717 C 235.23573,536.60031 236.74349,537.32105 237.02700,538.57272 C 237.32909,539.72295 237.09551,541.18638 235.96036,541.79960 C 234.77512,542.44413 233.02612,542.17738 232.36450,540.90866 C 231.26916,538.95418 231.87147,536.28193 233.64202,534.92571 C 235.44514,533.42924 238.07609,533.37089 240.19963,534.13862 C 242.38419,534.95111 243.68629,537.21483 243.89691,539.45694 C 243.95419,539.92492 243.97896,540.39668 243.97900,540.86798 z " style="fill:#000000;fill-opacity:1.0000000" id="path2893"/>
+
+  <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.0" width="24.886" height="41.75" id="svg1533">
+    <defs id="defs1536"/>
+    <g transform="translate(-427.1495,-34.28441) scale(0.8,0.8)" id="g12994">
+      <path d="M 431.56955,65.847427 C 428.17371,67.667397 426.36427,70.961977 427.47733,73.440387 C 428.66459,76.084027 432.74434,76.830107 436.58391,75.105757 C 440.42347,73.381397 442.57607,69.836357 441.38881,67.192727 C 440.20154,64.549087 436.1218,63.803007 432.28223,65.527357 C 432.04226,65.635127 431.79595,65.726097 431.56955,65.847427 z " style="opacity:0.9;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.2;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" id="path12112"/>
+      <path d="M 441.18705,68.62194 L 441.18705,35.03437" style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="path12114"/>
+      <path d="M 441.1824,35.99421 C 440.6199,42.30671 446.02495,44.56795 448.6824,47.49421 C 451.20836,50.27568 452.13107,53.48393 452.02788,56.48981 C 452.00033,57.29238 451.78245,60.76992 449.41343,64.25653 C 452.58135,55.50942 449.6319,51.99847 446.75047,49.20495 C 443.26053,45.82149 440.66435,42.63277 441.1824,35.99421 z " style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" id="path12116"/>

@@ -761,6 +761,9 @@ fc.util = fc.util || {};
     ns.DonutChart = {
         config: null,
         data: null,
+        svg: null,
+        arc: null,
+        pie: null,
         donutChart: null,
         draw: function(div, options){
             this.config = this.defaultConfig();
@@ -769,40 +772,65 @@ fc.util = fc.util || {};
             }
             var config = this.config;
             this.data = config.data;
-            console.log(this.data);
-            var arc = d3.svg.arc()
-                        .outerRadius(config.outerR)
-                        .innerRadius(config.innerR);
+            this.arc = d3.svg.arc()
+                         .outerRadius(config.outerR)
+                         .innerRadius(config.innerR);
+            var arc = this.arc;
 
-            var pie = d3.layout.pie()
-                        .sort(null)
-                        .value(function(d){ return d.value; });
-            var svg = d3.select(div)
+            this.pie = d3.layout.pie()
+                         .sort(null)
+                         .value(function(d){ return d.value; });
+            var pie = this.pie;
+            this.svg = d3.select(div)
                     .append("svg")
                     .attr("width", config.width)
                     .attr("height", config.height)
                     .append("g")
                     .attr("transform", "translate(" + (config.width/2 + config.margin.left/2) + ", " + (config.height/2 + config.margin.top/2) + ")");
-            svg.append("text")
+            this.svg.append("text")
                .attr("class", "label")
                .attr("text-anchor", "middle")
                .attr("transform", "translate(0, " + config.fontSize/2 + ")")
                .style("font-size", config.fontSize + "px")
                .style("fill", config.fontColor)
                .text(config.label);
-            this.donutChart = svg.selectAll(".arc")
-                                 .data(pie(this.data))
-                                 .enter()
-                                 .append("g")
-                                 .attr("class", function(d){
-                                     return d.data.dummy ? "arc dummy" : "arc";
-                                 });
+            this.donutChart = this.svg.selectAll(".arc")
+                                  .data(pie(this.data))
+                                  .enter()
+                                  .append("g")
+                                  .attr("class", function(d){
+                                      return d.data.dummy ? "arc dummy" : "arc";
+                                  });
             this.donutChart.append("path")
                            .attr("d", arc)
                            .style("fill", function(d){ return config.color(d.data); });
+            return this;
         },
-        update: function(){
+        update: function(options){
+            this.config = this.defaultConfig();
+            for(x in options){
+                this.config[x] = options[x];
+            }
+            var config = this.config;
+            this.data = config.data;
 
+            var arc = this.arc;
+            var pie = this.pie;
+
+            this.svg.select("text.label")
+                .text(config.label);
+            this.donutChart = this.svg.selectAll(".arc")
+                                  .data(pie(config.data))
+                                  .attr("class", function(d){
+                                      return d.data.dummy ? "arc dummy" : "arc";
+                                  });
+            this.donutChart
+                .select("path")
+                //.transition()
+                //.duration(100)
+                .attr("d", arc)
+                .style("fill", function(d){ return config.color(d.data); });
+            return this;
         },
         defaultConfig: function(){
             return {
@@ -830,7 +858,6 @@ fc.util = fc.util || {};
         names: null,
         draw: function(div, data, options){
             this.divId = div;
-            console.log(data);
             this.config = this.defaultConfig();
             if(options){
                 for(var x in options){
@@ -952,7 +979,6 @@ fc.util = fc.util || {};
 
         },
         update: function(data, options){
-            console.log(data);
             if(options){
                 for(var x in options){
                     this.config[x] = options[x];
@@ -1019,10 +1045,11 @@ fc.util = fc.util || {};
             var colors = this.config.color;
             var area = this.area;
 
-            console.log(seriesArr);
             this.stack(seriesArr);
             selection.select("path")
                      .data(seriesArr)
+                     .transition()
+                     .duration(100)
                      .attr("d", function(d) { return area(d.values); })
                      .style("fill", function(d) { return colors(d.name); })
                      .style("stroke", "grey");
@@ -1033,7 +1060,7 @@ fc.util = fc.util || {};
             var showPopover = this.showPopover,
                 removePopovers = this.removePopovers;
             points.selectAll(".point")
-                  .data(function(d) { console.log(d); return d.values; })
+                  .data(function(d) { return d.values; })
                   .enter()
                   .append("circle")
                   .attr("class", "point")
@@ -1100,6 +1127,287 @@ fc.util = fc.util || {};
                     x: "bottom",
                     y: "left"
                 }
+            };
+        }
+    };
+    ns.PolygonGraph = {
+        config: null,
+        xScale: null,
+        yScale: null,
+        svg: null,
+        area: null,
+        draw: function(div, val, options){
+            this.config = this.defaultConfig();
+            if(options){
+                for(var x in options){
+                    this.config[x] = options[x];
+                }
+            }
+            var config = this.config;
+            var data = config.convertData(val);
+            this.xScale = d3.scale.linear()
+                            .range([0, config.width])
+                            .domain([0, config.maxValue.x]);
+            this.yScale = d3.scale.linear()
+                            .range([config.height, 0])
+                            .domain([0, config.maxValue.y]);
+            var x = this.xScale,
+                y = this.yScale;
+            this.area = d3.svg.area()
+                          .x(function(d) { return x(d.x); })
+                          .y0(function(d){ return config.height; })
+                          .y1(function(d) { return y(d.y); });
+            this.svg = d3.select(div)
+                         .append("svg")
+                         .attr("width", config.width + config.margin.left + config.margin.right)
+                         .attr("height", config.height + config.margin.top + config.margin.bottom)
+                         .append("g")
+                         .attr("width", config.width)
+                         .attr("height", config.height)
+                         .attr("transform", "translate(" + config.margin.left + ", " + config.margin.top + ")");
+
+            var area = this.area;
+            var maxValue = config.maxValue.x;
+            this.config.color = this.config.color
+                                    .domain([0, maxValue*0.2,
+                                             maxValue*0.4, maxValue*0.6,
+                                             maxValue*0.8, maxValue]);
+            var color = this.config.color;
+            this.svg.append("path")
+                .attr("d", area(data.value))
+                .attr("fill", color(data.value[data.value.length-1]))
+                .attr("stroke-width", 2);
+
+            this.svg.append("text")
+                .attr("transform", "translate(" + (-config.margin.left) + ",15)")
+                .text(data.label)
+                .style("fill", "white");
+
+            this.svg.append("text")
+                .attr("class", "score")
+                .attr("transform", "translate(10,20)")
+                .attr("text-anchor", "")
+                .text(data.value[data.value.length-1].x)
+                .style("fill", "white")
+                .style("font-size", "3em");
+            return this;
+        },
+        update: function(val){
+            var config = this.config;
+            var data = config.convertData(val);
+
+            var area = this.area;
+            var color = this.config.color;
+            this.svg.select("path")
+                .transition()
+                .duration(100)
+                .attr("d", area(data.value))
+                .attr("fill", color(data.value[data.value.length-1].x));
+
+            this.svg.select("text.score")
+                .text(data.value[data.value.length-1].x);
+            return this;
+        },
+        defaultConfig: function(){
+            return {
+                color: d3.scale.linear()
+                         .range(["#9467bd", "#1f77b4", "#bcbd22",
+                                 "#f7b6d2", "#ff7f0e", "#d62728"]),
+            };
+        }
+    };
+    ns.BulletGraph = {
+        config: null,
+        svg: null,
+        id: null,
+        draw: function(id, data, options){
+            this.id = id;
+            if(!this.config){
+                this.config = this.defaultConfig();
+            }
+            if(options){
+                for(var x in options){
+                    this.config[x] = options[x];
+                }
+            }
+            var config = this.config;
+            var xScale = d3.scale.linear()
+                           .range([0, config.width])
+                           .domain([0, config.maxValue]);
+            var xAxis= d3.svg.axis()
+                         .scale(xScale)
+                         .orient("bottom")
+                         .ticks(10)
+                         .tickSubdivide(true);
+            var names = data.map(function(d){ return d.label; });
+            config.color.domain(names);
+
+            this.svg = d3.select(id)
+                         .append("svg")
+                         .attr("width", config.width + config.margin.left + config.margin.right)
+                         .attr("height", config.height + config.margin.top + config.margin.bottom)
+                         .append("g")
+                         .attr("transform", "translate(" + config.margin.left + "," + config.margin.top + ")");
+            this.svg.selectAll("g.bar")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "bar")
+                    .attr("transform", function(d, i){ return "translate(0," + (i * 40 + 20) + ")"; })
+                    .append("rect")
+                    .attr("width", function(d){ return xScale(config.scale[d.label](d.value)); })
+                    .attr("height", function(d) { return 30; })
+                    .style("fill", function(d) { return config.color(d.label); })
+                    .style("stroke", "gray");
+            this.svg.selectAll("g.bar")
+                    .append("text")
+                    .attr("x", -config.margin.left)
+                    .attr("y", 20)
+                    .text(function(d){ return d.label; });
+            this.svg.selectAll("g.bar")
+                    .append("text")
+                    .attr("text-anchor", "end")
+                    .text(function(d){ var percent = config.scale[d.label](d.value);
+                                       //fc.util.roundN(percent, 2) + "%";
+                                       return fc.util.roundN(d.value, 2); })
+                    .attr("x", function(d) { return xScale(config.scale[d.label](d.value))-5; })
+                    .attr("y", 20)
+                    .attr("fill", "white");
+            var line = d3.svg.line()
+                         .x(function(d){ return d.x; })
+                         .y(function(d){ return d.y; })
+                         .interpolate("linear");
+            this.svg.append("g")
+                .append("path")
+                .attr("d", line([{ x: 0, y: 0 },
+                                 { x: 0, y: config.height - config.margin.bottom}]))
+                .style("stroke-width", "1")
+                .style("stroke", "black");
+            this.svg.append("g")
+                    .attr("transform", "translate(0," + (config.height+config.margin.top-20) + ")")
+                    .call(xAxis);
+
+            return this;
+        },
+        update: function(data){
+            var id = this.id;
+            d3.select(id).selectAll("svg")
+              .data([])
+              .exit()
+              .remove();
+            this.draw(this.id, data);
+            return this;
+        },
+        defaultConfig: function(){
+            return {
+                width: 470,
+                height: 240,
+                margin: {
+                    top: 10,
+                    left: 120,
+                    bottom: 10,
+                    right: 100
+                },
+                maxValue: 120,
+                color: d3.scale.ordinal()
+                         .range(["#756bb1", "#6baed6", "#bcbd22",
+                                 "#3182bd", "#31a354"])
+            };
+        }
+    };
+    ns.PieChart = {
+        id: null,
+        config: null,
+        data: null,
+        svg: null,
+        arc: null,
+        pie: null,
+        draw: function(id, data, options){
+            this.id = id;
+            this.config = this.defaultConfig();
+            for(x in options){
+                this.config[x] = options[x];
+            }
+            var config = this.config;
+            this.arc = d3.svg.arc()
+                         .outerRadius(config.radius);
+            var arc = this.arc;
+            var names = data.map(function(d) { return d.label; });
+            this.config.color.domain(names);
+
+            this.pie = d3.layout.pie()
+                         .sort(null)
+                         .value(function(d){ return d.value; });
+            var pie = this.pie;
+            this.svg = d3.select(id)
+                    .append("svg")
+                    .attr("width", config.width + config.margin.left + config.margin.right)
+                    .attr("height", config.height + config.margin.top + config.margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + (config.width/2 + config.margin.left) + ", " + (config.height/2 + config.margin.top) + ")");
+            var pieChart = this.svg.selectAll(".arc")
+                               .data(pie(data))
+                               .enter()
+                               .append("g")
+                               .attr("class", "arc");
+            pieChart.append("path")
+                    .attr("d", arc)
+                    .style("fill", function(d){ ;return config.color(d.data.label); });
+            var showPopover = this.showPopover,
+                removePopovers = this.removePopovers;
+            pieChart.selectAll("path")
+                    .on("mouseover", function(d) { showPopover.call(this, d); })
+                    .on("mouseout", function(d) { removePopovers(); });
+
+            return this;
+        },
+        removePopovers: function(){
+            $(' .popover').each(function(){
+                $(this).remove();
+            });
+        },
+        showPopover: function(d){
+            $(this).popover({
+                title: d.data.label,
+                placement: 'auto',
+                container: 'body',
+                trigger: 'manual',
+                html: true,
+                content: function() {
+                    return "Score : " + fc.util.roundN(d.data.value, 2);
+                }
+            });
+            $(this).popover('show');
+        },
+        update: function(data){
+            var config = this.config;
+            var arc = this.arc;
+            var pie = this.pie;
+
+            var pieChart = this.svg.selectAll(".arc")
+                                  .data(pie(data))
+                                  .attr("class", "arc");
+            pieChart.select("path")
+                    .attr("d", arc)
+                    .style("fill", function(d){ return config.color(d.data.label); });
+            return this;
+        },
+        defaultConfig: function(){
+            return {
+                fontSize: 15,
+                fontColor: "black",
+                width: 200,
+                height: 200,
+                margin: {
+                    left: 40,
+                    top: 0,
+                    right: 20,
+                    bottom: 30
+                },
+                radius: 90,
+                color: d3.scale.ordinal()
+                         .range(["#756bb1", "#6baed6", "#74c476",
+                                 "#bcbd22", "#3182bd", "#31a354"])
             };
         }
     };

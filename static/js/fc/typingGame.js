@@ -44,6 +44,7 @@ fc.typing.events = fc.typing.events || {};
         stop: function(){
             clearTimeout(this.timerID);
             this.timerID = 0;
+            this.timers = [];
         }
     };
 })(fc);
@@ -55,7 +56,8 @@ fc.typing.events = fc.typing.events || {};
             musician: "musician",
             sound: "typing-sound",
             difficulty: "difficulty",
-            tempo: "tempo-mark",
+            tempo: "tempo",
+            tempoMark: "tempo-mark",
             problem: {
                 id: "problem-id",
                 ruby: "problem-ruby",
@@ -64,7 +66,7 @@ fc.typing.events = fc.typing.events || {};
             },
             correct: "correct-cell",
             miss: "miss-cell",
-            combo: "combo-cell",
+            combo: "combo",
             score: "score-sum-cell",
             result: {
                 resultData: "result-data",
@@ -91,6 +93,7 @@ fc.typing.events = fc.typing.events || {};
             timeBar: "time-bar",
             scoreBar: "score-bar",
             difficulty: "difficulty-graph",
+            problemNumber: "problem-number-graph",
             speedGauge: "container-speed",
             scoreGraph: "score-graph",
         },
@@ -113,6 +116,7 @@ fc.typing.events = fc.typing.events || {};
         $musicianName: $("#" + ns.constants.htmlID.musician),
         $difficulty: $("#" + ns.constants.htmlID.difficulty),
         $tempo: $("#" + ns.constants.htmlID.tempo),
+        $tempoMark: $("#" + ns.constants.htmlID.tempoMark),
         $problemID: $("#" + ns.constants.htmlID.problem.id),
         $problemRuby: $("#" + ns.constants.htmlID.problem.ruby),
         $problemCaption: $("#" + ns.constants.htmlID.problem.caption),
@@ -436,14 +440,14 @@ fc.typing.events = fc.typing.events || {};
         "ペ": ["pe"],
         "ポ": ["po"],
 
-        "ァ": ["xa"],
-        "ィ": ["xi"],
-        "ゥ": ["xu"],
-        "ェ": ["xe"],
-        "ォ": ["xo"],
-        "ャ": ["xya"],
-        "ュ": ["xyu"],
-        "ョ": ["xyo"],
+        "ァ": ["xa", "la"],
+        "ィ": ["xi", "li"],
+        "ゥ": ["xu", "lu"],
+        "ェ": ["xe", "le"],
+        "ォ": ["xo", "lo"],
+        "ャ": ["xya", "lya"],
+        "ュ": ["xyu", "lyu"],
+        "ョ": ["xyo", "lyo"],
 
         "キャ": ["kya"],
         "キィ": ["kyi"],
@@ -581,7 +585,7 @@ fc.typing.events = fc.typing.events || {};
             default: difficulty =  5;
         }
         ns.maxScore = maxScores[difficulty];
-        fc.typing.graphics.options.scoreBar.maxValue = ns.maxScore;
+        fc.typing.graphics.options.scoreBar.maxValue.x = ns.maxScore;
         fc.typing.graphics.options.difficulty.data = [{value:difficulty+1},
                                                       {value:5-difficulty,
                                                        dummy: true}];
@@ -683,7 +687,7 @@ fc.typing.events = fc.typing.events || {};
             ns.scoreConstants.speedA = gameInfo.scoreRate.speed*M / (Math.pow(300, 3) + Math.pow(200, 3));
             var speedA = ns.scoreConstants.speedA;
             ns.scoreConstants.speedB = speedA*Math.pow(300, 3);
-            ns.scoreConstants.maxSpeedA = gameInfo.scoreRate.maxSpeed*M / (Math.pow(400, 3) + Math.pow(200, 3));
+            ns.scoreConstants.maxSpeedA = gameInfo.scoreRate.maxSpeed*M / (Math.pow(400, 3) + Math.pow(300, 3));
             var maxSpeedA = ns.scoreConstants.maxSpeedA;
             ns.scoreConstants.maxSpeedB = maxSpeedA*Math.pow(400, 3);
             ns.scoreConstants.maxComboA =2*gameInfo.scoreRate.maxCombo*M / Math.pow(m, 3);
@@ -806,6 +810,7 @@ fc.typing.events = fc.typing.events || {};
             nodes.$problemRuby.html(gameInfo.problemData[ns.problemID].problem);
             nodes.$problemCaption.html(gameInfo.problemData[ns.problemID].display);
             ns.renderProblem();
+            unfocusProblems();
         }
         if(ns.currentProblem.length === 0){
             ns.spec.solved++;
@@ -845,30 +850,14 @@ fc.typing.events = fc.typing.events || {};
         function focusProblems(){
             var nodes = fc.typing.nodes;
             ns.flag.intermission = false;
-            nodes.$tempo.removeClass("unfocus");
-            nodes.$tempo.addClass("focus");
-            nodes.$problemID.removeClass("unfocus");
-            nodes.$problemID.addClass("focus");
-            nodes.$problemRuby.removeClass("unfocus");
-            nodes.$problemRuby.addClass("focus");
-            nodes.$problemCaption.removeClass("unfocus");
-            nodes.$problemCaption.addClass("focus");
-            nodes.$problemRaw.removeClass("unfocus");
-            nodes.$problemRaw.addClass("focus");
+            $("#problem-display").addClass("focus");
+            $("#problem-display").removeClass("unfocus");
         }
         function unfocusProblems(){
             var nodes = fc.typing.nodes;
             ns.flag.intermission = true;
-            nodes.$tempo.addClass("unfocus");
-            nodes.$tempo.removeClass("focus");
-            nodes.$problemID.addClass("unfocus");
-            nodes.$problemID.removeClass("focus");
-            nodes.$problemRuby.addClass("unfocus");
-            nodes.$problemRuby.removeClass("focus");
-            nodes.$problemCaption.addClass("unfocus");
-            nodes.$problemCaption.removeClass("focus");
-            nodes.$problemRaw.addClass("unfocus");
-            nodes.$problemRaw.removeClass("focus");
+            $("#problem-display").addClass("unfocus");
+            $("#problem-display").removeClass("focus");
         }
         function resetCurrentProblem(pId){
             var gameInfo = fc.typing.status.gameInfo,
@@ -878,11 +867,13 @@ fc.typing.events = fc.typing.events || {};
             }
             var problemData = gameInfo.problemData;
             ns.currentProblem = $.extend(true, [], problemData[pId].problemList);
+            fc.typing.graphics.updateProblemInfo();
             nodes.$problemID.html(pId + 1);
             nodes.$problemRuby.html(problemData[pId].problem);
             nodes.$problemCaption.html(problemData[pId].display);
             ns.renderProblem();
             ns.renderTempo();
+            ns.renderScores();
         }
         function clearProblems(){
             var nodes = fc.typing.nodes;
@@ -919,7 +910,8 @@ fc.typing.events = fc.typing.events || {};
             tmp = 700;
         }
         var tempo = tempoMarks[tmp];
-        fc.typing.nodes.$tempo.html(tempo + " " + Math.floor(avg));
+        fc.typing.nodes.$tempoMark.html(tempo);
+        fc.typing.nodes.$tempo.html(Math.floor(avg) + " )");
     },
     ns.scoreFuncs = {
         getComboScore: function(combo){
@@ -977,9 +969,54 @@ fc.typing.events = fc.typing.events || {};
     };
     ns.displayFinPage = function(){
         var nodes = fc.typing.nodes,
-            gameInfo = fc.typing.status.gameInfo;
+            gameInfo = fc.typing.status.gameInfo,
+            graphics = fc.typing.graphics;
             util = fc.util;
-        nodes.$resultData.removeAttr("hidden");
+        console.log("max type " + gameInfo.maxType);
+        var scoreSpecOptions = {
+            scale: {
+                "Correct": d3.scale.linear()
+                             .range([0, 100])
+                             .domain([0, gameInfo.maxType]),
+                "Average Speed": d3.scale.linear()
+                                   .range([0, 100])
+                                   .domain([0, 500]),
+                "Solved": d3.scale.linear()
+                           .range([0, 100])
+                           .domain([0, gameInfo.problemData.length]),
+                "Max Combo": d3.scale.linear()
+                               .range([0, 100])
+                               .domain([0, gameInfo.maxType]),
+                "Max Speed": d3.scale.linear()
+                               .range([0, 100])
+                               .domain([0, 700])
+            }
+        },
+            scoreDataOptions = {
+
+            },
+            scoreSpec = [{ label: "Correct", value: ns.spec.correct, max: gameInfo.maxType },
+                         { label: "Average Speed", value: ns.getSpeed(), max: 500 },
+                         { label: "Solved", value: ns.spec.solved, max: gameInfo.problemData.length },
+                         { label: "Max Speed", value: ns.spec.maxSpeed, max: 600 },
+                         { label: "Max Combo", value: ns.spec.maxCombo, max: gameInfo.maxType }],
+            scoreData = [{ label: "Correct", value: ns.score.correct },
+                         { label: "Average Speed", value: ns.score.speed },
+                         { label: "Combo", value: ns.score.combo },
+                         { label: "Solved", value: ns.score.solved },
+                         { label: "Max Speed", value: ns.score.maxSpeed },
+                         { label: "Max Combo", value: ns.score.maxCombo }];
+        if(!fc.viz.template.BulletGraph.id){
+            fc.viz.template.BulletGraph.draw("#score-bar-graph", scoreSpec, scoreSpecOptions);
+        } else {
+            fc.viz.template.BulletGraph.update(scoreSpec);
+        }
+        if(!fc.viz.template.PieChart.id){
+            fc.viz.template.PieChart.draw("#score-pie-chart", scoreData, scoreDataOptions);
+        } else {
+            fc.viz.template.PieChart.update(scoreData);
+        }
+        nodes.$resultData.removeClass("hidden");
         nodes.$resDifficulty.html(fc.data.difficulties[gameInfo.difficulty]);
         nodes.$resMaxScore.html(gameInfo.maxScore);
         nodes.$resMaxType.html(gameInfo.maxType);
@@ -1005,8 +1042,13 @@ fc.typing.events = fc.typing.events || {};
         nodes.$resScoreSumRaw.html(util.roundN(ns.scoreFuncs.getScoreSumRaw(), 2));
         nodes.$resCorrectRate.html(100*util.roundN(ns.scoreFuncs.getCorrectRate(), 2) + "%");
         var sum = util.roundN(ns.scoreFuncs.getScoreSum(), 2),
-            sumStr = sum + " (" + util.roundN((100*sum/gameInfo.maxScore), 2) + "%)";
-        nodes.$resScoreSum.html(sumStr);
+            scorePercent = util.roundN((100*sum/gameInfo.maxScore), 2);
+        nodes.$resScoreSum.html(sum);
+        $("#res-score-percent").html("(" + scorePercent + "%)");
+    };
+    ns.toggleFinPage = function(){
+        var nodes = fc.typing.nodes;
+        nodes.$resultData.addClass("hidden");
     };
 })(fc.typing.status.playInfo);
 
@@ -1029,17 +1071,40 @@ fc.typing.events = fc.typing.events || {};
         },
         scoreBar: {
             margin: {
-                top: 10,
+                top: 20,
                 left: 50,
                 right: 0,
                 bottom: 0
             },
-            height: 30,
-            maxValue: gameInfo.maxScore,
+            width: ($(window).width()*0.3),
+            height: 50,
+            maxValue: {
+                x: gameInfo.maxScore,
+                y: 30
+            },
             label: "Score",
-            update: function(){
-                return playInfo.scoreFuncs.getScoreSum();
-            }
+            convertData: function(val){
+                var maxValue = this.maxValue;
+                var ret = [];
+                var base = [{x: 0, y: 10, f:function(d){ return 10; }},
+                            {x: 0.55*maxValue.x, y: 10, f: function(d){ return 10; }},
+                            {x: 0.75*maxValue.x, y: 30, f: function(d){ return 20/(0.2*maxValue.x) * (d-0.55*maxValue.x) + 10; }},
+                            {x: maxValue.x, y: 30, f: function(d){ return 30; }}];
+                var overMax = true;
+                for(var i = 0; i < base.length; i++){
+                    if(base[i].x < val){
+                        ret.push(base[i]);
+                    } else {
+                        ret.push({x: val, y: base[i].f(val)});
+                        overMax = false;
+                        break;
+                    }
+                }
+                if(overMax){
+                    ret.push({x: val, y: 30});
+                }
+                return { label:"Score", value: ret };
+            },
         },
         difficulty: {
             fontSize: 20,
@@ -1059,6 +1124,44 @@ fc.typing.events = fc.typing.events || {};
                                .range(["#6baed6", "#74c476", "#fd8d3c",
                                        "#e377c2", "#bcbd22", "#7b4173"])
                                .domain([1, 6]);
+                console.log(d);
+                if(d.dummy){
+                    console.log(d.dummy);
+                    return "#ffffff";
+                }
+                return colors(d.value);
+            }
+        },
+        problemNumber: {
+            fontSize: 20,
+            fontColor: "white",
+            width: 160,
+            height: 160,
+            innerR: 30,
+            outerR: 50,
+            margin: {
+                top: 0,
+                left: 20,
+                bottom: 0,
+                right: 0
+            },
+            color: function(d){
+                var colors = d3.scale.category20()
+                               .range(["#6baed6", "#74c476", "#fd8d3c",
+                                       "#e377c2", "#bcbd22", "#7b4173"]);
+                if(this.maxValue){
+                    var arr = [];
+                    for(var i = 1; i <= this.maxValue; i++){
+                        arr.push(i);
+                    }
+                    colors.domain(arr);
+                } else {
+                    var arr = [];
+                    for(var i = 1; i <= 10; i++){
+                        arr.push(i);
+                    }
+                    colors.domain(arr);
+                }
                 console.log(d);
                 if(d.dummy){
                     console.log(d.dummy);
@@ -1090,19 +1193,29 @@ fc.typing.events = fc.typing.events || {};
         },
     };
     ns.data = {
+        scoreBar: [],
         scoreGraph: []
     };
     ns.timeBar = null;
     ns.scoreBar = null;
     ns.difficulty = null;
+    ns.problemNumber = null;
     ns.speedGauge = null;
     ns.scoreGraph = null;
     ns.renderGraphics = function(){
         ns.timeBar = fc.viz.template.TimeBar.draw("#" + graphicID.timeBar, "#" + htmlID.sound, ns.options.timeBar);
-        ns.scoreBar = fc.viz.template.BarGraph.draw("#" + graphicID.scoreBar, ns.options.scoreBar);
+        ns.scoreBar = fc.viz.template.PolygonGraph.draw("#" + graphicID.scoreBar, playInfo.scoreFuncs.getScoreSum(), ns.options.scoreBar);
         ns.difficulty = fc.viz.template.DonutChart.draw("#" + graphicID.difficulty, ns.options.difficulty);
         ns.speedGauge = fc.graphics.speedGauge("#" + graphicID.speedGauge, ns.options.speedGauge);
         ns.speedGauge.render();
+        ns.options.problemNumber.max = gameInfo.problemData.length;
+        ns.options.problemNumber.data = [
+            {value: 1},
+            {value: gameInfo.problemData.length-playInfo.problemID-1,
+             dummy: true}
+        ];
+        ns.options.problemNumber.label = "1/" + gameInfo.problemData.length;
+        ns.problemNumber = fc.viz.template.DonutChart.draw("#" + graphicID.problemNumber, ns.options.problemNumber);
 
         var scoreData = {
             "correct": playInfo.score.correct,
@@ -1115,6 +1228,15 @@ fc.typing.events = fc.typing.events || {};
         ns.data.scoreGraph.push({ label: 0, values: scoreData });
         ns.scoreGraph = fc.viz.template.LineAreaGraph.draw("#" + graphicID.scoreGraph, ns.data.scoreGraph, ns.options.scoreGraph);
     };
+    ns.updateProblemInfo = function(){
+        ns.options.problemNumber.data = [
+            {value: playInfo.problemID + 1},
+            {value: Math.max(gameInfo.problemData.length-playInfo.problemID-1, 0),
+             dummy: true}
+        ];
+        ns.options.problemNumber.label = (playInfo.problemID+1) + "/" + gameInfo.problemData.length;
+        ns.problemNumber.update(ns.options.problemNumber);
+    };
     ns.updateGraphics = function(){
         var nodes = fc.typing.nodes,
             preTime = parseFloat(nodes.typingSound.currentTime),
@@ -1122,16 +1244,23 @@ fc.typing.events = fc.typing.events || {};
             diffTime = 0,
             preCorrect = playInfo.spec.correct;
         return function(){
+            var curTime = nodes.typingSound.currentTime;
             if(!playInfo.flag.intermission &&
                !nodes.typingSound.paused){
-                diffTime += nodes.typingSound.currentTime - preTime;
+                var sub = curTime - preTime;
+                console.log(diffTime);
+                diffTime += sub;
+                console.log("curTime = " + curTime + ", preTime = " + preTime + ", sub = " + sub + ", diffTime = " + diffTime);
             }
-            preTime = nodes.typingSound.currentTime;
+            preTime = curTime;
+            //console.log("pretime = " + preTime);
             ns.timeBar.update();
-            ns.scoreBar.update();
+            ns.scoreBar.update(fc.util.roundN(playInfo.scoreFuncs.getScoreSum(), 4));
             if(!playInfo.flag.intermission &&
                !nodes.typingSound.paused &&
                events.status.called % events.callInterval == 0){
+                //console.log("totaltime added");
+                console.log(diffTime);
                 playInfo.spec.totalTime += diffTime;
                 updateGraphics(diffTime, preCorrect, preTime);
                 preCorrect = playInfo.spec.correct;
@@ -1256,9 +1385,11 @@ fc.typing.events = fc.typing.events || {};
                          fc.timers.add(playInfo.renderProblemInfo);
                          fc.timers.add(fc.typing.graphics.updateGraphics());
                          fc.timers.start();
+                         fc.typing.status.playInfo.toggleFinPage();
                          break;
                 case 81: fc.typing.nodes.typingSound.pause();
                          fc.timers.stop();
+                         fc.typing.status.playInfo.displayFinPage();
                          break;
                 default: break;
             }

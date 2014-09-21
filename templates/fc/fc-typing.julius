@@ -24,6 +24,25 @@ fc.typing.events.postRecord = function(){
 };
 
 window.onload = function(){
+    d3.select("#g-clef-layer1")
+      .attr("transform", "scale(0.1, 0.1)");
+    d3.select("#g-clef")
+      .append("svg")
+      .attr("width", "60px")
+      .attr("height", "90px")
+      .append("g")
+      .append("use")
+      .attr("xlink:href", "#g-clef-layer1");
+    d3.select("#f-clef-layer1")
+      .attr("transform", "scale(2.0, 2.0)");
+    d3.select("#f-clef")
+      .append("svg")
+      .attr("width", "60px")
+      .attr("height", "50px")
+      .append("g")
+      .attr("transform", "translate(24,0)")
+      .append("use")
+      .attr("xlink:href", "#f-clef-layer1");
     $("div.navbar-fixed-top").autoHidingNavbar(
         {showOnUpscroll: true,
          showOnButton: true,
@@ -43,7 +62,7 @@ window.onload = function(){
     fc.typing.graphics.renderGraphics();
     playInfo.scoreConstants.resetValue();
     var resultNode = $("#result-data");
-    resultNode.css("top", ($(window).height()-resultNode.height())/2 + 25);
+    resultNode.css("top", ($(window).height()-600)/2+25);
     console.log("loaded");
     console.log(fc.typing.status.gameInfo);
     $("#post-btn").on("click", function(e){

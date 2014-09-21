@@ -18,6 +18,16 @@ body {
     }
 }
 
+line.minor {
+    stroke: #777;
+    stroke-dasharray: 2,2;
+}
+
+path.domain {
+    fill: none;
+    stroke: black;
+}
+
 .point {
     stroke: grey;
     stroke-width: 3px;
@@ -113,6 +123,7 @@ video {
 .musician {
     color: white;
     font-size: 3em;
+    width: 120%;
     margin-left: 10%;
     font-weight: bold;
     font-family: 'Poiret One', cursive
@@ -131,13 +142,13 @@ div .board {
     text-shadow: 2px 2px 1px #999999;
 }
 
-.focus {
-    color: #ffffff;
+.focus text {
     text-shadow: 5px 5px 1px #999999;
+    fill: #ffffff;
 }
 
-.unfocus {
-    color: gray;
+.unfocus text {
+    fill: gray;
 }
 
 div#problem-id {
@@ -191,12 +202,13 @@ div#miss {
     box-shadow: inset 0 0 50px rgba(140, 111, 49, 1);
 }
 
-#problem-display {
-    margin-left: 5%;
-}
-
 .caption {
     font-size: 3.0em;
+    font-weight: bold;
+}
+
+.sub-caption {
+    font-size: 2.5em;
     font-weight: bold;
 }
 
@@ -227,7 +239,7 @@ div #play-box {
     position: absolute;
     background-color: #fff;
     width: 60%;
-    max-height: 85%;
+    height: 600px;
     left: 20%;
     bottom: 5%;
     opacity: 0.9;
@@ -272,4 +284,81 @@ div #play-box {
 }
 
 #typing-game {
+}
+
+#g-clef {
+    float: left;
+    width: 10%;
+    height: 90px;
+    display: inline;
+}
+
+#f-clef {
+    float: left;
+    width: 10%;
+    display: inline;
+}
+
+#problem-string {
+    width: 90%;
+    height: 104px;
+    display: inline;
+}
+
+#problem-raw {
+    width: 90%;
+    display: inline;
+}
+
+.tempo-sign-group {
+    display: inline;
+    width: 20px;
+    height: 60px;
+    text {
+        font-size: 1.5em;
+        font-family: cursive;
+    }
+}
+
+#tempo-sign {
+    font-size: 1.5em;
+}
+
+#tempo-mark {
+    display: inline;
+}
+
+#score-bar-graph {
+    display: inline;
+}
+
+#score-pie-chart {
+    display: inline;
+}
+
+div.panel-heading {
+    font-size: 2em;
+    font-family: 'Poiret One', cursive;
+    font-weight: bold;
+}
+
+.result-summary {
+    margin-top: 20px;
+    font-size: 1.4em;
+    div {
+        font-family: cursive;
+    }
+    p {
+        font-family: cursive;
+    }
+}
+
+.play-result-graph {
+    text {
+        font-family: cursive;
+    }
+}
+
+#score-sum-group {
+    font-size: 1.4em;
 }
