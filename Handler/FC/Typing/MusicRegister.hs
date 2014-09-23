@@ -71,6 +71,9 @@ postFCMusicRegisterR = do
            Just pictureFile -> liftIO $ Just <$> (FCTI.writeToServer packageDir
                               pictureFile)
            _ -> return Nothing
+      _ <- case pictureFilename of
+        Just pictPath -> liftIO $ FCTI.convertPicture pictPath
+        Nothing -> return ()
       configFilename <- case (FCDM.configData musicData) of
            Just configFile -> liftIO $ Just <$> (FCTI.writeToServer packageDir
                               configFile)

@@ -10,9 +10,6 @@ multiCheckBoxList :: (Show a, Eq a, RenderMessage App msg) => [(msg, a)] -> Fiel
 multiCheckBoxList xs = Field
   { fieldParse = \rawVals _fileInfo -> do
        opts <- optionsPairs xs
-       $logInfo $ T.pack $ show $ map optionDisplay $ olOptions opts
-       $logInfo $ T.pack $ show $ map optionInternalValue $ olOptions opts
-       $logInfo $ T.pack $ show $ map optionExternalValue $ olOptions opts
        let (leftList, rightList) = partitionEithers $ map (fieldParseHelper opts) rawVals
        $logInfo $ T.pack $ show rawVals
        if length leftList > 0

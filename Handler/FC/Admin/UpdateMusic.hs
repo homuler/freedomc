@@ -116,6 +116,10 @@ postFCUpdateMusicR musicId = do
           newPicturePath <- liftIO $ case FCDT.newPictureData newMusicData of
             Just pictureFile -> Just <$> ((pathSeparator:) <$> FCTI.writeToServer' packageDir pictureFile)
             Nothing -> return $ FCDT.pictureSrc $ FCDT.newMusicInfo newMusicData
+          _ <- case newPicturePath of
+            Just pictPath -> liftIO $ FCTI.convertPicture pictPath
+            Nothing -> return ()
+
           $logInfo $ T.pack $ show $ FCDT.newMusicInfo newMusicData
           _ <- mapM (\i -> do
                         deleteSession $ T.pack $ "problem" ++ show i

@@ -104,8 +104,8 @@ postFCMusicEditorR musicTitle = do
     FormSuccess musicInfo -> do
       let targetDir = takeDirectory $ FCDT.lyricSrc musicInfo
           jsonPath = combine targetDir $ (T.unpack musicTitle) ++ ".json"
+          mPictPath = T.pack <$> FCDT.pictureSrc musicInfo
       mFormat <- lookupSession "mFormat"
-      liftIO $ FCTI.saveConfigFile musicInfo jsonPath
       _ <- mapM (\(i, _) -> do
                deleteSession $ T.pack $ "problem" ++ show i
                deleteSession $ T.pack $ "startTime" ++ show i

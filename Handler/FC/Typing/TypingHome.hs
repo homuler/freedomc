@@ -2,6 +2,7 @@ module Handler.FC.Typing.TypingHome where
 
 import Import
 import qualified Data.Text as T
+import qualified FC.Typing.IO as FCTI
 import Text.Julius (rawJS)
 
 getFCTypingR :: Handler Html

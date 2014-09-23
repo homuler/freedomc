@@ -3,11 +3,14 @@ module FC.Typing.IO where
 import Import
 import System.FilePath
 import System.Directory
+import System.Process
+import System.Exit
 import Control.Monad
 import qualified Data.Text as T
 import qualified Data.Char as C
 import qualified FC.Data.Typing as FCDT
 import qualified FC.Data.Music as FCDM
+import qualified FC.Util as FU
 import qualified Data.ByteString.Lazy as B
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as E
@@ -23,6 +26,26 @@ parseConfigFile :: FilePath -> IO (Maybe FCDT.TypingMusicInfo)
 parseConfigFile path = do
   file <- B.readFile path
   return $ decode file
+
+convertPicture :: FilePath -> IO ()
+convertPicture fp = do
+  let ext = takeExtension fp
+      thumbnailPath = (dropExtension $ dropDrive fp) ++ "-thumbnail" ++ ext
+  putStrLn thumbnailPath
+  (extCode, stdout, stderr) <- readProcessWithExitCode "convert" ["-resize", "500x",  "-unsharp", "2x1.4+0.5+0", "-colors", "65", "-quality", "100", (dropDrive fp), thumbnailPath] ""
+  putStrLn $ show extCode
+  putStrLn $ show stdout
+  putStrLn $ show stderr
+  case extCode of
+   ExitSuccess -> return ()
+   ExitFailure _ -> do
+     readProcessWithExitCode "cp" ["-f", fp, thumbnailPath] ""
+     return ()
+
+getThumbnailPath :: FilePath -> FilePath
+getThumbnailPath fp = let (ext, file) = (takeExtension fp,
+                                         dropExtension fp)
+                      in file ++ "-thumbnail" ++ ext
 
 uploadDirectory :: FilePath
 uploadDirectory = "static"
@@ -106,7 +129,8 @@ getPackageContents path = do
       configExt = [".json"]
       videoFiles = filter (\x -> takeExtension x `elem` videoExt) contents
       soundFiles = filter (\x -> takeExtension x `elem` soundExt) contents
-      pictFiles = filter (\x -> takeExtension x `elem` pictExt) contents
+      pictFiles = filter (\x -> takeExtension x `elem` pictExt &&
+                                not (FU.endsWith "thumbnail" (dropExtension x))) contents
       lyricFiles = filter (\x -> takeExtension x `elem` lyricExt) contents
       configFiles = filter (\x -> takeExtension x `elem` configExt) contents
       musicFilePath = case (videoFiles, soundFiles) of
@@ -123,3 +147,4 @@ getPackageContents path = do
                           [] -> Nothing
                           (x:xs) -> Just $ path </> x
   return (musicFilePath, pictFilePath, lyricFilePath, configFilePath)
+

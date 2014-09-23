@@ -31,7 +31,7 @@ getFCInstallPackageR = do
   selectRep $ do
     provideRep $ return $(shamletFile "templates/fc/fc-typing-package-list.hamlet")
 
---postFCInstallPackageR :: Handler Html
+postFCInstallPackageR :: Handler ()
 postFCInstallPackageR = do
   mPackageListInput <- runInputPost $ iopt FCField.multiDynamicCheckBox "package-list[]"
   case mPackageListInput of
@@ -42,6 +42,7 @@ postFCInstallPackageR = do
                   acc' <- acc
                   return $ paths:acc')
         (return []) packageListInput
+      $logInfo $ T.pack $ show packageList
       msg <- foldr
              (\(w, x, y, z) acc -> do
                  case (w, x, y, z) of
@@ -50,6 +51,9 @@ postFCInstallPackageR = do
                      musicInfo <- liftIO $ FTIO.parseConfigFile cp
                      case musicInfo of
                        Just mi -> do
+                         _ <- case mpp of
+                           Just pictPath -> liftIO $ FTIO.convertPicture pictPath
+                           Nothing -> return ()
                          let musician = FCDT.musician mi
                              genre = FCDT.genre mi
                              format = FCDT.format mi

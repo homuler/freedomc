@@ -6,7 +6,7 @@
           <input type=number name=game-id value=#{id} hidden>
           <div .music-thumbnail data-id=#{id}>
             $maybe pictPath <- fCMusicDataPicturePath musicData
-              <img src=#{pictPath} .thumbnail>
+              <img src=#{FCTI.getThumbnailPath $ T.unpack pictPath} .thumbnail>
             $nothing
               <img src=@{StaticR img_default_thumbnail_png} .thumbnail>
     <div .row>
